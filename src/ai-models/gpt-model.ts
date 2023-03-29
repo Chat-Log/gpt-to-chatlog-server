@@ -31,26 +31,67 @@ export const makeCompletion = (content: string) => {
       const readableStream = new Readable({
         read() {
           stream.on('data', (chunk) => {
-            // console.log(chunk);
-            this.push(chunk);
+            const encodedData = chunk.toString('base64'); // encode the data as Base64
+            const decodedData = Buffer.from(encodedData, 'base64').toString(
+              'utf-8',
+            ); // decode the data from Base64 and convert to a string
+            // console.log(decodedData);
+            const data = decodedData.split('data: ')[1];
+            // console.log(data);
+
+            if (data == '[DONE]') {
+              console.log('done');
+              return;
+              // const obj = JSON.parse(decodedData);
+            }
+            if (!data) {
+              console.log('no data');
+              return;
+            }
+            if (data) {
+              // console.log(data);
+              if (data.startsWith('{')) {
+                const obj = JSON.parse(data);
+                console.log(obj.choices);
+              }
+            }
+            // this.push(chunk);
             // chunks.push(chunk);
           });
 
           stream.on('end', () => {
-            //   this.push(null);
-            //   console.log("Stream ended.");
+            this.push(null);
+            console.log('Stream ended.');
           });
 
           stream.on('error', (error) => {
-            //   console.error("Error occurred: ", error);
-            //   this.push(null);
+            console.error('Error occurred: ', error);
+            this.push(null);
           });
         },
       });
 
       // Do something with each chunk of data
       readableStream.on('data', (chunk) => {
-        console.log('Received chunk: ', chunk.toString());
+        // console.log(chunk);
+        // console.log('Received chunk: ', chunk.toString());
+        // const encodedData = chunk.toString('base64'); // encode the data as Base64
+        // const decodedData = Buffer.from(encodedData, 'base64').toString(
+        //   'utf-8',
+        // ); // decode the data from Base64 and convert to a string
+        // // console.log(decodedData);
+        // const data = decodedData.split('data: ')[1];
+        // // console.log(data);
+        // if (data == '[DONE]') {
+        //   console.log('done');
+        //   // const obj = JSON.parse(decodedData);
+        // }
+        // if (!data) {
+        //   console.log('no data');
+        // }
+        // console.log(a);
+        // console.log(obj);
+        // console.log(chunk.data);
         // Do something with the chunk data here
       });
 
