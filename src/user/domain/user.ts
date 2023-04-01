@@ -1,4 +1,4 @@
-interface User {
+export interface User {
   loginByEmail(email: string, password: string): User;
   loginByKakao(): User;
   changeApiKey(): void;

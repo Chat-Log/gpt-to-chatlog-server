@@ -1,12 +1,10 @@
 import { Observable } from 'rxjs';
 
-interface Completion {
+export interface Completion {
   completeMessage(
     model: string,
     tags: string[],
     content: string,
-    prevContents?: object,
+    prevCompletions?: object,
   ): any;
-
-  // retrieveCompletions(): any;
 }
