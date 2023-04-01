@@ -1,5 +1,5 @@
-import { Topic } from 'src/completion/domain/topic/topic';
-import { Completion } from 'src/completion/domain/completion';
+import { Completion } from '../domain/completion/completion';
+import { Topic } from '../domain/topic';
 
 export class TopicImpl implements Topic {
   private name: string;

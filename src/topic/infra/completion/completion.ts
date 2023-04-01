@@ -1,5 +1,5 @@
-import { Completion } from '../domain/completion';
-import { Tag } from '../domain/vo/Tag';
+import { Completion } from 'src/topic/domain/completion/completion';
+import { Tag } from 'src/topic/domain/vo/tag';
 
 export class CompletionImpl implements Completion {
   private model: string;
