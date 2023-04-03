@@ -5,7 +5,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Model } from 'src/topic/domain/enum/model';
+import { Model } from 'src/common/enum/enum';
 
 export class AskQuestionDto {
   @IsString()

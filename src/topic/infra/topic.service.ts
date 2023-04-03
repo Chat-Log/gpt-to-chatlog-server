@@ -3,7 +3,7 @@ import { CompletionImpl } from './completion/completion';
 import { ChatGPTModel } from 'src/ai-models/chat-gpt-model';
 import { TopicImpl } from './topic';
 import { Readable } from 'stream';
-import { Model } from '../domain/enum/model';
+import { Model } from '../../common/enum/enum';
 import { ModelProvider } from 'src/model-provider/model-provider';
 import { AskQuestionDto } from './dto/ask-question.dto';
 import { Topic } from '../domain/topic';
