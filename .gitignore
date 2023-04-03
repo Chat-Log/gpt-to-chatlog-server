@@ -34,13 +34,11 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-
-
+*.env
+/src/**/*.env
 
 # Compiled class file
 *.class
-
-
 
 # BlueJ files
 *.ctxt
