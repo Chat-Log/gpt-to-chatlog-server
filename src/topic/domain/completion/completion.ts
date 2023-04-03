@@ -1,10 +1,6 @@
-import { Observable } from 'rxjs';
+import { Readable } from 'stream';
 
 export interface Completion {
-  completeMessage(
-    model: string,
-    tags: string[],
-    content: string,
-    prevCompletions?: object,
-  ): any;
+  answerQuestion(): Readable;
+  getProps(): any;
 }

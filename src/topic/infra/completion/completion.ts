@@ -1,18 +1,57 @@
+import { ModelProvider } from 'src/model-provider/model-provider';
 import { Completion } from 'src/topic/domain/completion/completion';
-import { Tag } from 'src/topic/domain/vo/tag';
+import { Readable } from 'stream';
 
 export class CompletionImpl implements Completion {
-  private model: string;
-  private tags: Tag[];
-  private content: string;
-  private prevCompletions: object;
+  private id: string;
+  private model: ModelProvider;
+  private prevCompletions: Completion[];
+  private question: string;
+  private answer: string;
 
-  completeMessage(
-    model: string,
-    tags: string[],
-    content: string,
-    prevCompletions?: object,
+  constructor(
+    model: ModelProvider,
+    question: string,
+    answer?: string,
+    prevCompletions?: Completion[],
   ) {
+    this.model = model;
+    this.question = question;
+    this.answer = answer;
+    this.prevCompletions = prevCompletions;
+  }
+  static askQuestion(model: ModelProvider, question: string): Readable {
+    return model.askQuestion(new CompletionImpl(model, question, null, null));
+  }
+
+  writeAnswer(answer: string): void {
+    this.answer = answer;
+  }
+  getProps(): any {
+    return {
+      id: this.id,
+      model: this.model,
+      prevCompletions: this.prevCompletions,
+      question: this.question,
+      answer: this.answer,
+    };
+  }
+  answerQuestion(): Readable {
     throw new Error('Method not implemented.');
+  }
+
+  public static createCompletion(
+    model: ModelProvider,
+    question: string,
+    prevCompletions?: Completion[],
+  ) {
+    const newCompletion = new CompletionImpl(
+      model,
+      question,
+      null,
+      prevCompletions,
+    );
+
+    return newCompletion;
   }
 }
