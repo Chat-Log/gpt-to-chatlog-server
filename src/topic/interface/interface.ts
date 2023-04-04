@@ -1,14 +1,13 @@
 import { Completion } from '../domain/completion/completion';
 
-export interface CompleteOptions {
-  maxTokenCount: number;
-  baseUrl: string;
-  stream: boolean;
-  n: number;
+export interface TopicProps {
+  id: string;
+  title: string;
+  completions: Completion[];
+  tags: TagProps[];
 }
 
-export interface TopicProps {
-  id: number;
+export interface TagProps {
+  id: string;
   name: string;
-  completions: Completion[];
 }
