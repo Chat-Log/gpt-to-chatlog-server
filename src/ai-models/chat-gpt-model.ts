@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ModelProvider } from 'src/model-provider/model-provider';
 import { Completion } from 'src/topic/domain/completion/completion';
 import Config from '../config/config';
+import { CompleteOptions, IMessage } from '../common/interface/interface';
 
 const data = {
   model: 'gpt-3.5-turbo',
@@ -17,7 +18,11 @@ const headers = {
 };
 
 export class ChatGPTModel extends ModelProvider {
-  askQuestion(completion: Completion): any {
+  askQuestion(completion: Completion, options?: CompleteOptions): any {
+    const messages = this.mapToMessages([
+      completion,
+      ...options?.previousCompletions,
+    ]);
     const resultStream = new Readable({
       read() {
         axios
@@ -25,9 +30,7 @@ export class ChatGPTModel extends ModelProvider {
             'https://api.openai.com/v1/chat/completions',
             {
               ...data,
-              messages: [
-                { role: 'user', content: completion.getProps().question },
-              ],
+              messages,
             },
             {
               headers,
@@ -35,7 +38,6 @@ export class ChatGPTModel extends ModelProvider {
             },
           )
           .then((response) => {
-            // console.log(response);
             const stream = response.data;
 
             stream.on('data', (chunk) => {
@@ -44,7 +46,6 @@ export class ChatGPTModel extends ModelProvider {
                 'utf-8',
               );
               const data = decodedData.split('data: ')[1];
-              // console.log(data);
               if (data == '[DONE]') {
                 stream.destroy();
                 this.push(null);
@@ -52,13 +53,11 @@ export class ChatGPTModel extends ModelProvider {
               }
 
               if (!data) {
-                // console.log('no data');
                 return;
               }
 
               if (data.startsWith('{')) {
                 const obj = JSON.parse(data);
-                // console.log(obj.choices);
                 const writeData = obj.choices && obj.choices[0].delta.content;
                 if (writeData) {
                   this.push(writeData);
@@ -77,12 +76,42 @@ export class ChatGPTModel extends ModelProvider {
             });
           })
           .catch((error) => {
-            // console.log(error);
+            console.log(error);
             this.destroy();
           });
       },
     });
 
     return resultStream;
+  }
+
+  countToken(completions: Completion[]): number {
+    const messages = this.mapToMessages(completions);
+    return this.tokenManager.getTokenCountForMessages(messages);
+  }
+
+  mapToMessages(completions: Completion[]): IMessage[] {
+    const len = completions.length;
+    const messages = completions.map((completion, idx) => {
+      if (idx == len - 1) {
+        return [
+          {
+            role: 'user',
+            content: completion.getProps().question,
+          },
+        ];
+      }
+      return [
+        {
+          role: 'system',
+          content: completion.getProps().question,
+        },
+        {
+          role: 'system',
+          content: completion.getProps().answer,
+        },
+      ];
+    });
+    return messages.flat();
   }
 }
