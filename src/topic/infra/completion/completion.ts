@@ -5,33 +5,24 @@ import { Readable } from 'stream';
 export class CompletionImpl implements Completion {
   private id: string;
   private model: ModelProvider;
-  private prevCompletions: Completion[];
   private question: string;
   private answer: string;
+  private tokenCount: number;
 
-  constructor(
-    model: ModelProvider,
-    question: string,
-    answer?: string,
-    prevCompletions?: Completion[],
-  ) {
+  constructor(model: ModelProvider, question: string, answer?: string) {
     this.model = model;
     this.question = question;
     this.answer = answer;
-    this.prevCompletions = prevCompletions;
-  }
-  static askQuestion(model: ModelProvider, question: string): Readable {
-    return model.askQuestion(new CompletionImpl(model, question, null, null));
   }
 
-  writeAnswer(answer: string): void {
+  reflectAnswerAndTokenCount(answer: string, tokenCount: number): void {
     this.answer = answer;
+    this.tokenCount = tokenCount;
   }
   getProps(): any {
     return {
       id: this.id,
       model: this.model,
-      prevCompletions: this.prevCompletions,
       question: this.question,
       answer: this.answer,
     };
@@ -40,18 +31,7 @@ export class CompletionImpl implements Completion {
     throw new Error('Method not implemented.');
   }
 
-  public static createCompletion(
-    model: ModelProvider,
-    question: string,
-    prevCompletions?: Completion[],
-  ) {
-    const newCompletion = new CompletionImpl(
-      model,
-      question,
-      null,
-      prevCompletions,
-    );
-
-    return newCompletion;
+  public static createQuestion(model: ModelProvider, question: string) {
+    return new CompletionImpl(model, question, null);
   }
 }
