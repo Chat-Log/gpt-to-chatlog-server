@@ -1,4 +1,4 @@
 export interface TopicEntity {
-  id: number;
-  name: string;
+  id: string;
+  title: string;
 }

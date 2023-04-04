@@ -4,8 +4,8 @@ import { TopicEntity } from '../domain/topic.entity';
 @Entity()
 export class TopicOrmEntity implements TopicEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column()
-  name: string;
+  title: string;
 }
