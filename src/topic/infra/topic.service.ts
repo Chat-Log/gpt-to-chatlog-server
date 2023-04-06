@@ -5,12 +5,12 @@ import { Readable } from 'stream';
 import { Model } from '../../common/enum/enum';
 import { ModelProvider } from 'src/model-provider/model-provider';
 import { AskQuestionDto } from './dto/ask-question.dto';
-import { TopicRepository } from './topic.repository';
+import { TopicOrmRepository } from './topic.orm-repository';
 import { UserImpl } from '../../user/infra/user';
 
 @Injectable()
 export class TopicService {
-  constructor(private readonly topicRepository: TopicRepository) {}
+  constructor(private readonly topicRepository: TopicOrmRepository) {}
   chooseModel(model: Model): ModelProvider {
     switch (model) {
       case Model['GPT3.5_TURBO']:
