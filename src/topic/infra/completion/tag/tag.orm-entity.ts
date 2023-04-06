@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { IsUUID } from 'class-validator';
 import { TagEntity } from '../../../domain/completion/tag/tag.entity';
 
@@ -10,4 +16,10 @@ export class TagOrmEntity implements TagEntity {
 
   @Column()
   name: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
