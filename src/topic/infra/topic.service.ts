@@ -7,10 +7,16 @@ import { ModelProvider } from 'src/model-provider/model-provider';
 import { AskQuestionDto } from './dto/ask-question.dto';
 import { TopicOrmRepository } from './topic.orm-repository';
 import { UserImpl } from '../../user/infra/user';
+import { TagOrmRepository } from './completion/tag/tag.orm-repository';
+import { CompletionOrmRepository } from './completion/completion.orm-repository';
 
 @Injectable()
 export class TopicService {
-  constructor(private readonly topicRepository: TopicOrmRepository) {}
+  constructor(
+    private readonly topicRepository: TopicOrmRepository,
+    private readonly tagRepository: TagOrmRepository,
+    private readonly completionRepository: CompletionOrmRepository,
+  ) {}
   chooseModel(model: Model): ModelProvider {
     switch (model) {
       case Model['GPT3.5_TURBO']:
