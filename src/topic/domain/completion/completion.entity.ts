@@ -1,6 +1,8 @@
+import { Model } from '../../../common/enum/enum';
+
 export interface CompletionEntity {
   id: string;
-  model: string;
+  model: Model;
   question: string;
   answer: string;
   tokenCount: number;
