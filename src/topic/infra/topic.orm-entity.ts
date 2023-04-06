@@ -1,4 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { TopicEntity } from '../domain/topic.entity';
 
 @Entity()
@@ -8,4 +13,10 @@ export class TopicOrmEntity implements TopicEntity {
 
   @Column()
   title: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @CreateDateColumn()
+  updatedAt: Date;
 }
