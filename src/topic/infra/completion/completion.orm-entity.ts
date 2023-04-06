@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { CompletionEntity } from '../../domain/completion/completion.entity';
+import { Model } from '../../../common/enum/enum';
 
 @Entity()
 export class CompletionOrmEntity implements CompletionEntity {
@@ -25,7 +26,7 @@ export class CompletionOrmEntity implements CompletionEntity {
   answer: string;
 
   @Column()
-  model: string;
+  model: Model;
 
   @Column()
   question: string;
