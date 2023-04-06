@@ -13,6 +13,8 @@ export class TopicImpl implements Topic {
   private tags: Tag[];
   private completions: Completion[] = [];
   private user: User;
+  private createdAt: Date;
+  private updatedAt: Date;
 
   updateTopicTitle(title: string): void {
     this.title = title;
@@ -75,6 +77,8 @@ export class TopicImpl implements Topic {
       title: this.title,
       completions: this.completions,
       tags: this.tags.map((tag) => tag.getProps()),
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
     };
   }
 }
