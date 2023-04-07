@@ -5,8 +5,11 @@ import {
   IFindOneOptions,
   IFindOneResult,
 } from './interface/interface';
+import { BaseRepository } from './base.repository';
 
-export abstract class BaseOrmRepository<Model, Entity> {
+export abstract class BaseOrmRepository<Model, Entity>
+  implements BaseRepository<Model, Entity>
+{
   protected constructor(
     protected readonly repository: Repository<Entity>,
     protected readonly mapper: BaseMapper<Model, Entity>,
