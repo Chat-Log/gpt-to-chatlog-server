@@ -1,20 +1,11 @@
 import { User } from '../domain/user';
-import { UserProps } from '../interface/interface';
+import { UserProps } from '../domain/user.props';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 
-export class UserImpl implements User {
-  private id: string;
-  private email: string;
-  private password: string;
-  private apiKey: string;
-  private phone: string;
-  private name: string;
-  private createdAt: Date;
-  private updatedAt: Date;
-
+export class UserImpl extends User {
   constructor(props: Partial<UserProps>) {
-    Object.assign(this, props);
+    super(props);
   }
 
   static async signUpByEmail(
@@ -48,8 +39,7 @@ export class UserImpl implements User {
   }
 
   async hashPassword(): Promise<void> {
-    this.password = await bcrypt.hash(this.password, 10);
-    console.log(this.password);
+    this.props.password = await bcrypt.hash(this.props.password, 10);
   }
 
   logout(): void {
@@ -66,18 +56,5 @@ export class UserImpl implements User {
 
   findEmail(phone: string): string {
     throw new Error('Method not implemented.');
-  }
-
-  getProps(): UserProps {
-    return {
-      id: this.id,
-      name: this.name,
-      email: this.email,
-      phone: this.phone,
-      password: this.password,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      apiKey: this.apiKey,
-    };
   }
 }
