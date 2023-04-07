@@ -1,0 +1,14 @@
+export enum ErrorStatusCode {
+  //auth
+  AUTHORIZATION_FAILED = '4101',
+  TOKEN_EXPIRED = '4102',
+
+  //data-access
+  DATA_CONFLICT = '4901',
+  DATA_SAVE_FAILED = '4902',
+  FOREIGN_KEY_CONSTRAINT_FAILED = '4903',
+  DATA_REMOVE_FAILED = '4904',
+
+  //internal
+  UNKNOWN_EXCEPTION = '4501',
+}
