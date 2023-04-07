@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TopicModule } from './topic/infra/topic.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/infra/user.module';
+import { ExceptionModule } from './common/exception/exception.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserModule } from './user/infra/user.module';
       entities: [__dirname + '/**/*.orm-entity{.ts,.js}'],
       // autoLoadEntities: true,
     }),
+    ExceptionModule,
   ],
 
   controllers: [],
