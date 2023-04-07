@@ -6,9 +6,9 @@ import { SignUpByEmailDto } from './dto/sign-up-by-email.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/sign-up')
+  @Post('/sign-up/email')
   async signUpByEmail(@Body() dto: SignUpByEmailDto) {
-    const { email, password, phone } = dto;
-    return await this.userService.signUpByEmail(email, password, phone);
+    const { email, password, phone, name } = dto;
+    return await this.userService.signUpByEmail(email, password, phone, name);
   }
 }
