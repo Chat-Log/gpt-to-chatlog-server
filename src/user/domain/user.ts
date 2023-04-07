@@ -1,3 +1,5 @@
+import { UserProps } from '../interface/interface';
+
 export interface User {
   loginByEmail(email: string, password: string): User;
 
@@ -12,4 +14,6 @@ export interface User {
   changePassword(): boolean;
 
   findEmail(phone: string): string;
+
+  getProps(): UserProps;
 }

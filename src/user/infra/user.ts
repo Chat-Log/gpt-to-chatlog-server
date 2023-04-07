@@ -1,9 +1,15 @@
 import { User } from '../domain/user';
+import { UserProps } from '../interface/interface';
 
 export class UserImpl implements User {
+  private id: string;
   private email: string;
   private password: string;
   private apiKey: string;
+  private phone: string;
+  private name: string;
+  private createdAt: Date;
+  private updatedAt: Date;
 
   static signUpByEmail(
     email: string,
@@ -39,5 +45,17 @@ export class UserImpl implements User {
 
   findEmail(phone: string): string {
     throw new Error('Method not implemented.');
+  }
+
+  getProps(): UserProps {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      password: this.password,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      apiKey: this.apiKey,
+    };
   }
 }
