@@ -25,4 +25,9 @@ export class UserOrmEntity implements UserEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column()
+  phone: string;
+  @Column({ nullable: true })
+  apiKey: string;
 }
