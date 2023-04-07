@@ -6,6 +6,11 @@ import {
   IFindOneResult,
 } from './interface/interface';
 import { BaseRepository } from './base.repository';
+import {
+  DataConflictException,
+  DataRemoveFailedException,
+  ForeignKeyConstraintFailedException,
+} from './exception/data-access.exception';
 
 export abstract class BaseOrmRepository<Model, Entity>
   implements BaseRepository<Model, Entity>
@@ -22,9 +27,9 @@ export abstract class BaseOrmRepository<Model, Entity>
     } catch (err) {
       console.log(err);
 
-      if (err.code === '23505') throw new Error();
+      if (err.code === '23505')
+        throw new DataConflictException('already exist property');
       else {
-        throw new Error('저장에 실패했습니다');
       }
     }
   }
@@ -51,9 +56,12 @@ export abstract class BaseOrmRepository<Model, Entity>
     try {
       return await this.repository.remove(entities);
     } catch (err) {
-      if (err.code === '23503') throw new Error();
+      if (err.code === '23503')
+        throw new ForeignKeyConstraintFailedException(
+          'foreign key constraint failed',
+        );
       else {
-        throw new Error();
+        throw new DataRemoveFailedException('remove failed');
       }
     }
   }

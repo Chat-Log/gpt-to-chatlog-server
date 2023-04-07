@@ -1,6 +1,7 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserImpl } from './user';
 import { UserOrmRepository } from './user.orm-repository';
+import { DataConflictException } from '../../common/exception/data-access.exception';
 
 @Injectable()
 export class UserService {
@@ -13,18 +14,15 @@ export class UserService {
     name: string,
   ) {
     await this.checkDuplicatedEmail(email);
-
     const user = await UserImpl.signUpByEmail(email, password, phone, name);
-
     await this.userRepository.save(user);
-
     return user;
   }
 
   private async checkDuplicatedEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email: email } });
     if (user) {
-      throw new ConflictException('Duplicated email');
+      throw new DataConflictException('already exist email');
     }
   }
 }
