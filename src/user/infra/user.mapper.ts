@@ -4,7 +4,18 @@ import { UserImpl } from './user';
 export class UserMapper implements BaseMapper<User, UserEntity> {
   toEntity(model: User): UserEntity {
     if (!model) return null;
-    return model.getProps();
+    const { id, email, password, apiKey, phone, name, createdAt, updatedAt } =
+      model.getPropsCopy();
+    return {
+      apiKey,
+      createdAt,
+      name,
+      phone,
+      updatedAt,
+      id,
+      email,
+      password,
+    };
   }
 
   toModel(entity: UserEntity): User {
