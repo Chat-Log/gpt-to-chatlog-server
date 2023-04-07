@@ -3,6 +3,7 @@ export interface UserProps {
   name: string;
   email: string;
   password: string;
+  phone: string;
   createdAt: Date;
   updatedAt: Date;
   apiKey: string;
