@@ -53,10 +53,6 @@ export class UserImpl extends User {
     throw new Error('Method not implemented.');
   }
 
-  findEmail(phone: string): string {
-    throw new Error('Method not implemented.');
-  }
-
   private comparePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.props.password);
   }
