@@ -6,5 +6,5 @@ export interface UserProps {
   phone: string;
   createdAt: Date;
   updatedAt: Date;
-  apiKey: string;
+  gptKey: string;
 }

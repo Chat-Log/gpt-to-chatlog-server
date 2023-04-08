@@ -19,7 +19,7 @@ export class UserImpl extends User {
       id: uuid(),
       email,
       password,
-      apiKey: null,
+      gptKey: null,
       phone,
       name,
     });
@@ -33,8 +33,8 @@ export class UserImpl extends User {
     }
   }
 
-  changeGptKey(apiKey: string): void {
-    this.props.apiKey = apiKey;
+  changeGptKey(gptKey: string): void {
+    this.props.gptKey = gptKey;
   }
 
   async hashPassword(): Promise<void> {

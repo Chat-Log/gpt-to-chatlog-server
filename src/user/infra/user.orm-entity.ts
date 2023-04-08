@@ -29,5 +29,5 @@ export class UserOrmEntity implements UserEntity {
   @Column()
   phone: string;
   @Column({ nullable: true })
-  apiKey: string;
+  gptKey: string;
 }

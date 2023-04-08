@@ -3,7 +3,7 @@ interface UserEntity {
   name: string;
   email: string;
   password: string;
-  apiKey: string;
+  gptKey: string;
   phone: string;
   createdAt: Date;
   updatedAt: Date;

@@ -4,10 +4,10 @@ import { UserImpl } from './user';
 export class UserMapper implements BaseMapper<User, UserEntity> {
   toEntity(model: User): UserEntity {
     if (!model) return null;
-    const { id, email, password, apiKey, phone, name, createdAt, updatedAt } =
+    const { id, email, password, gptKey, phone, name, createdAt, updatedAt } =
       model.getPropsCopy();
     return {
-      apiKey,
+      gptKey,
       createdAt,
       name,
       phone,
@@ -24,7 +24,7 @@ export class UserMapper implements BaseMapper<User, UserEntity> {
       id: entity.id,
       email: entity.email,
       password: entity.password,
-      apiKey: entity.apiKey,
+      gptKey: entity.gptKey,
       phone: entity.phone,
       name: entity.name,
       createdAt: entity.createdAt,
