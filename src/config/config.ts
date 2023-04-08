@@ -9,4 +9,6 @@ dotenv.config({ path: envFile });
 export default {
   port: process.env.PORT || 3000,
   chatGptApiKey: process.env.CHATGPT_API_KEY,
+  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
+  accessTokenExpired: process.env.ACCESS_TOKEN_EXPIRED,
 };
