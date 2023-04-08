@@ -10,8 +10,6 @@ import {
 } from '../../common/exception/data-access.exception';
 import { Auth } from '../../common/auth/auth';
 
-// jest.mock('../../user/infra/user');
-
 describe('UserService', () => {
   let userService: UserService;
   let userRepository: BaseRepository<User, UserEntity>;
