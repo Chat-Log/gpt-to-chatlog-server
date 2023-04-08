@@ -14,6 +14,7 @@ import { UserCommonResponseDto } from './dto/user.common-reponse.dto';
 import { InvalidInputException } from '../../common/exception/bad-request.exception';
 import { ChangeGptKeyDto } from './dto/change-gpt-key.dto';
 import { UserGuard } from '../../common/guard/user.guard';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('/users')
 export class UserController {
@@ -57,5 +58,12 @@ export class UserController {
   async findEmailByPhone(@Query('phone') phone: string) {
     const email = await this.userService.findEmail(phone);
     return new UserCommonResponseDto({ data: { email } });
+  }
+
+  @Patch('/password')
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    const { email, phone } = dto;
+    const password = await this.userService.resetPassword(email, phone);
+    return new UserCommonResponseDto({ password });
   }
 }

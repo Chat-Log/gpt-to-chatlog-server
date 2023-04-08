@@ -67,4 +67,18 @@ export class UserService {
     }
     return user.getPropsCopy().email;
   }
+
+  public async resetPassword(email: string, phone: string) {
+    const user = await this.userRepository.findOne({
+      where: { email: email, phone: phone },
+    });
+    if (!user) {
+      throw new UserNotFoundException(
+        `no exist user with email : ${email} and phone : ${phone}`,
+      );
+    }
+    const newPassword = await user.resetPassword();
+    await this.userRepository.save(user);
+    return newPassword;
+  }
 }
