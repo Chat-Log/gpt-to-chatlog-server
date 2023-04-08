@@ -1,6 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignUpByEmailDto } from './dto/sign-up-by-email.dto';
+import { LoginByEmailDto } from './dto/login-by-email.dto';
 
 @Controller('/users')
 export class UserController {
@@ -10,5 +11,13 @@ export class UserController {
   async signUpByEmail(@Body() dto: SignUpByEmailDto) {
     const { email, password, phone, name } = dto;
     return await this.userService.signUpByEmail(email, password, phone, name);
+  }
+
+  @Post('/login/email')
+  async loginByEmail(@Body() dto: LoginByEmailDto) {
+    const { email, password } = dto;
+    console.log(email, password);
+    const result = await this.userService.loginByEmail(email, password);
+    return result;
   }
 }

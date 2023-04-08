@@ -1,7 +1,8 @@
 import { User } from '../domain/user';
 import { UserProps } from '../domain/user.props';
-import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
+import { UserNotFoundException } from '../../common/exception/data-access.exception';
+import * as bcrypt from 'bcrypt';
 
 export class UserImpl extends User {
   constructor(props: Partial<UserProps>) {
@@ -26,8 +27,10 @@ export class UserImpl extends User {
     return user;
   }
 
-  loginByEmail(email: string, password: string): User {
-    throw new Error('Method not implemented.');
+  async loginByEmail(inputPassword: string): Promise<void> {
+    if (!(await this.comparePassword(inputPassword))) {
+      throw new UserNotFoundException('wrong password');
+    }
   }
 
   loginByKakao(): User {
@@ -40,6 +43,11 @@ export class UserImpl extends User {
 
   async hashPassword(): Promise<void> {
     this.props.password = await bcrypt.hash(this.props.password, 10);
+  }
+
+  async checkExist(): Promise<void> {
+    if (!this.props.id) {
+    }
   }
 
   logout(): void {
@@ -56,5 +64,10 @@ export class UserImpl extends User {
 
   findEmail(phone: string): string {
     throw new Error('Method not implemented.');
+  }
+
+  private comparePassword(password: string): Promise<boolean> {
+    console.log(password, this.props.password);
+    return bcrypt.compare(password, this.props.password);
   }
 }
