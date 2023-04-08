@@ -33,8 +33,8 @@ export class UserImpl extends User {
     }
   }
 
-  changeApiKey(): void {
-    throw new Error('Method not implemented.');
+  changeGptKey(apiKey: string): void {
+    this.props.apiKey = apiKey;
   }
 
   async hashPassword(): Promise<void> {

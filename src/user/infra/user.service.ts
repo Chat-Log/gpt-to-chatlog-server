@@ -4,6 +4,7 @@ import { UserOrmRepository } from './user.orm-repository';
 import {
   DataConflictException,
   DataNotFoundException,
+  UserNotFoundException,
 } from '../../common/exception/data-access.exception';
 import { User } from '../domain/user';
 import { Auth } from '../../common/auth/auth';
@@ -34,6 +35,13 @@ export class UserService {
     return { user, accessToken };
   }
 
+  public async changeGptKey(userId: string, gptKey: string) {
+    const user = await this.checkUserExistById(userId);
+    user.changeGptKey(gptKey);
+    await this.userRepository.save(user);
+    return user;
+  }
+
   private async checkDuplicatedEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email: email } });
     if (user) {
@@ -43,5 +51,13 @@ export class UserService {
 
   private async findUserByEmail(email: string): Promise<User> {
     return await this.userRepository.findOne({ where: { email: email } });
+  }
+
+  private async checkUserExistById(userId: string) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UserNotFoundException('not exist user');
+    }
+    return user;
   }
 }
