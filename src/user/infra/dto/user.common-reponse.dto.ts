@@ -8,17 +8,21 @@ interface UserCommonResponseBody {
 export class UserCommonResponseDto {
   constructor(responseBody: UserCommonResponseBody, options?: any) {
     const { user, data } = responseBody;
-    console.log(responseBody);
-    console.log(data);
+
     const userProps = user.getPropsCopy();
-    const { password, apiKey, ...userPropsWithoutAuth } = userProps;
+    const { password, gptKey, ...userPropsWithoutAuth } = userProps;
 
     return {
       data: {
         ...userPropsWithoutAuth,
         ...data,
+        gptKey: gptKey && UserCommonResponseDto.maskingGptKey(gptKey),
       },
       message: 'success',
     };
+  }
+
+  private static maskingGptKey(gptKey: string) {
+    return gptKey.slice(0, 8) + '*'.repeat(gptKey.length);
   }
 }
