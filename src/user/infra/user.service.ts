@@ -29,7 +29,7 @@ export class UserService {
     if (!user) {
       throw new DataNotFoundException('not exist email');
     }
-    user.loginByEmail(password);
+    await user.loginByEmail(password);
     const accessToken = Auth.issueAccessToken({ id: user.getPropsCopy().id });
     return { user, accessToken };
   }

@@ -33,21 +33,12 @@ export class UserImpl extends User {
     }
   }
 
-  loginByKakao(): User {
-    throw new Error('Method not implemented.');
-  }
-
   changeApiKey(): void {
     throw new Error('Method not implemented.');
   }
 
   async hashPassword(): Promise<void> {
     this.props.password = await bcrypt.hash(this.props.password, 10);
-  }
-
-  async checkExist(): Promise<void> {
-    if (!this.props.id) {
-    }
   }
 
   logout(): void {
@@ -67,7 +58,6 @@ export class UserImpl extends User {
   }
 
   private comparePassword(password: string): Promise<boolean> {
-    console.log(password, this.props.password);
     return bcrypt.compare(password, this.props.password);
   }
 }
