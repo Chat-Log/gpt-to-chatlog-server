@@ -52,8 +52,15 @@ export class UserImpl extends User {
     return newPassword;
   }
 
-  changePassword(): boolean {
-    throw new Error('Method not implemented.');
+  async changePassword(
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    if (!(await this.comparePassword(oldPassword))) {
+      throw new UserNotFoundException('wrong password');
+    }
+    this.props.password = newPassword;
+    await this.hashPassword();
   }
 
   private comparePassword(password: string): Promise<boolean> {

@@ -56,7 +56,7 @@ export class UserService {
   private async checkUserExistById(userId: string) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
-      throw new UserNotFoundException('not exist user');
+      throw new UserNotFoundException(`not exist user with id : ${userId}`);
     }
     return user;
   }
@@ -80,5 +80,16 @@ export class UserService {
     const newPassword = await user.resetPassword();
     await this.userRepository.save(user);
     return newPassword;
+  }
+
+  public async changePassword(
+    userId: string,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    const user = await this.checkUserExistById(userId);
+    await user.changePassword(oldPassword, newPassword);
+    await this.userRepository.save(user);
+    return user;
   }
 }
