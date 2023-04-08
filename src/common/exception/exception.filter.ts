@@ -29,7 +29,7 @@ export class BaseExceptionFilter implements ExceptionFilter {
       exception = this.mapBaseExceptionToHttpException(exception);
     }
     if (!(exception instanceof HttpException)) {
-      throw new InternalServerErrorException(exception);
+      exception = new InternalServerErrorException(exception);
     }
 
     const response = (exception as HttpException).getResponse();
