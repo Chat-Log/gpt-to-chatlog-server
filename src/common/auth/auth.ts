@@ -1,7 +1,10 @@
 import * as jwt from 'jsonwebtoken';
 import Config from '../../config/config';
 import { Request } from 'express';
-import { TokenInvalidException } from '../exception/auth.exception';
+import {
+  TokenExpiredException,
+  TokenInvalidException,
+} from '../exception/auth.exception';
 import { UserRole } from '../enum/enum';
 
 interface IssueAccessTokenPayload {
@@ -27,9 +30,15 @@ export class Auth {
 
   static validateAccessTokenOrThrowError(request: Request) {
     const accessToken = Auth.getAccessTokenFromRequest(request);
+    if (!accessToken) {
+      throw new TokenInvalidException('no access token in request');
+    }
     try {
       jwt.verify(accessToken, process.env.JWT_SECRET);
-    } catch {
+    } catch (err) {
+      if (err instanceof jwt.TokenExpiredError) {
+        throw new TokenExpiredException('token expired');
+      }
       throw new TokenInvalidException('invalid token');
     }
   }
