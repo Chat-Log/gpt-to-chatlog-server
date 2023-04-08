@@ -34,7 +34,7 @@ export class Auth {
       throw new TokenInvalidException('no access token in request');
     }
     try {
-      jwt.verify(accessToken, process.env.JWT_SECRET);
+      jwt.verify(accessToken, Config.accessTokenSecret);
     } catch (err) {
       if (err instanceof jwt.TokenExpiredError) {
         throw new TokenExpiredException('token expired');
