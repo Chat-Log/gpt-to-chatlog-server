@@ -1,4 +1,12 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignUpByEmailDto } from './dto/sign-up-by-email.dto';
 import { LoginByEmailDto } from './dto/login-by-email.dto';
@@ -43,5 +51,11 @@ export class UserController {
     if (!userId) throw new InvalidInputException('no userId');
     const user = await this.userService.changeGptKey(userId, gptKey);
     return new UserCommonResponseDto({ user });
+  }
+
+  @Get('/email')
+  async findEmailByPhone(@Query('phone') phone: string) {
+    const email = await this.userService.findEmail(phone);
+    return new UserCommonResponseDto({ data: { email } });
   }
 }

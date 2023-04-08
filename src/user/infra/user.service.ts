@@ -60,4 +60,11 @@ export class UserService {
     }
     return user;
   }
+  public async findEmail(phone: string) {
+    const user = await this.userRepository.findOne({ where: { phone: phone } });
+    if (!user) {
+      throw new UserNotFoundException(`no exist user with phone : ${phone}`);
+    }
+    return user.getPropsCopy().email;
+  }
 }
