@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { TopicEntity } from '../domain/topic.entity';
+import { CompletionEntity } from '../domain/completion/completion.entity';
 
 @Entity()
 export class TopicOrmEntity implements TopicEntity {
@@ -19,4 +20,8 @@ export class TopicOrmEntity implements TopicEntity {
 
   @CreateDateColumn()
   updatedAt: Date;
+
+  completions: CompletionEntity[];
+
+  user: UserEntity;
 }
