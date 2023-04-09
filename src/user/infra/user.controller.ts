@@ -42,7 +42,7 @@ export class UserController {
     );
     return new UserCommonResponseDto({
       user,
-      data: { accessToken },
+      accessToken,
     });
   }
 
@@ -58,7 +58,7 @@ export class UserController {
   @Get('/email')
   async findEmailByPhone(@Query('phone') phone: string) {
     const email = await this.userService.findEmail(phone);
-    return new UserCommonResponseDto({ data: { email } });
+    return new UserCommonResponseDto({ email });
   }
 
   @Patch('/password/reset')
