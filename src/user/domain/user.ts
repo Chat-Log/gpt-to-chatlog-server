@@ -2,9 +2,7 @@ import { UserProps } from './user.props';
 import { BaseDomainModel } from '../../common/base.domain-model';
 
 export abstract class User extends BaseDomainModel<UserProps> {
-  abstract loginByEmail(email: string, password: string): User;
-
-  abstract loginByKakao(): User;
+  abstract loginByEmail(inputPassword: string): void;
 
   abstract changeApiKey(): void;
 
