@@ -3,6 +3,7 @@ import { ErrorStatusCode } from './error-status-code';
 export interface ErrorResponseBody {
   statusCode: ErrorStatusCode;
   message: string;
+  error: string;
 }
 
 export abstract class BaseException extends Error {
@@ -17,6 +18,7 @@ export abstract class BaseException extends Error {
     return {
       statusCode: this.statusCode,
       message: this.message,
+      error: this.constructor.name,
     };
   }
 }

@@ -30,3 +30,15 @@ export class DataRemoveFailedException extends DataAccessAccessException {
     super(ErrorStatusCode.DATA_REMOVE_FAILED, message);
   }
 }
+
+export class DataNotFoundException extends DataAccessAccessException {
+  constructor(message: string) {
+    super(ErrorStatusCode.DATA_NOT_FOUND, message);
+  }
+}
+
+export class UserNotFoundException extends DataAccessAccessException {
+  constructor(message: string) {
+    super(ErrorStatusCode.USER_NOT_FOUND, message);
+  }
+}
