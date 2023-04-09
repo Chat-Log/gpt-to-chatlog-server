@@ -1,10 +1,10 @@
-interface UserEntity {
+export interface UserProps {
   id: string;
   name: string;
   email: string;
   password: string;
-  apiKey: string;
   phone: string;
   createdAt: Date;
   updatedAt: Date;
+  apiKey: string;
 }

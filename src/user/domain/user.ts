@@ -1,9 +1,18 @@
-export interface User {
-  loginByEmail(email: string, password: string): User;
-  loginByKakao(): User;
-  changeApiKey(): void;
-  logout(): void;
-  resetPassword(): string;
-  changePassword(): boolean;
-  findEmail(phone: string): string;
+import { UserProps } from './user.props';
+import { BaseDomainModel } from '../../common/base.domain-model';
+
+export abstract class User extends BaseDomainModel<UserProps> {
+  abstract loginByEmail(email: string, password: string): User;
+
+  abstract loginByKakao(): User;
+
+  abstract changeApiKey(): void;
+
+  abstract logout(): void;
+
+  abstract resetPassword(): string;
+
+  abstract changePassword(): boolean;
+
+  abstract findEmail(phone: string): string;
 }
