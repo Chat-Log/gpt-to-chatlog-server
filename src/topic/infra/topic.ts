@@ -1,13 +1,14 @@
 import { ModelProvider } from 'src/model-provider/model-provider';
 import { Completion } from '../domain/completion/completion';
 import { Topic } from '../domain/topic';
-import { TopicProps } from '../interface/interface';
 import { CompletionImpl } from './completion/completion';
 import { User } from '../../user/domain/user';
 import { v4 as uuid } from 'uuid';
 import { Tag } from '../domain/completion/tag/tag';
 import { Readable } from 'stream';
-export class TopicImpl implements Topic {
+import { TopicProps } from '../domain/topic.props';
+
+export class TopicImpl extends Topic {
   private id: string;
   private title: string;
   private tags: Tag[];
@@ -16,17 +17,19 @@ export class TopicImpl implements Topic {
   private createdAt: Date;
   private updatedAt: Date;
 
+  constructor(props: Partial<TopicProps>) {
+    super(props);
+  }
   updateTopicTitle(title: string): void {
     this.title = title;
   }
 
   static createTopic(tags: Tag[], user: User): Topic {
-    const newTopic = new TopicImpl();
-    newTopic.tags = tags;
-    newTopic.id = uuid();
-    newTopic.user = user;
-
-    return newTopic;
+    return new TopicImpl({
+      tags,
+      user,
+      id: uuid(),
+    });
   }
   private getCurrentCompletion(): Completion {
     return this.completions[this.completions.length - 1];
@@ -69,16 +72,5 @@ export class TopicImpl implements Topic {
   }
   resumeTopic(completion: Completion) {
     this.completions.push(completion);
-  }
-
-  getProps(): TopicProps {
-    return {
-      id: this.id,
-      title: this.title,
-      completions: this.completions,
-      tags: this.tags.map((tag) => tag.getProps()),
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-    };
   }
 }
