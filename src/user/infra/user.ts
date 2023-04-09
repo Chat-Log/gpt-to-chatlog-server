@@ -45,15 +45,14 @@ export class UserImpl extends User {
     throw new Error('Method not implemented.');
   }
 
-  resetPassword(): string {
-    throw new Error('Method not implemented.');
+  async resetPassword(): Promise<string> {
+    const newPassword = Math.random().toString(36).substr(2, 11);
+    this.props.password = newPassword;
+    await this.hashPassword();
+    return newPassword;
   }
 
   changePassword(): boolean {
-    throw new Error('Method not implemented.');
-  }
-
-  findEmail(phone: string): string {
     throw new Error('Method not implemented.');
   }
 

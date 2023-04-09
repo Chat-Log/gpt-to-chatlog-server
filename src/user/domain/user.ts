@@ -8,9 +8,7 @@ export abstract class User extends BaseDomainModel<UserProps> {
 
   abstract logout(): void;
 
-  abstract resetPassword(): string;
+  abstract resetPassword(): Promise<string>;
 
   abstract changePassword(): boolean;
-
-  abstract findEmail(phone: string): string;
 }
