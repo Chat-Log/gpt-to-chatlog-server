@@ -10,5 +10,8 @@ export abstract class User extends BaseDomainModel<UserProps> {
 
   abstract resetPassword(): Promise<string>;
 
-  abstract changePassword(): boolean;
+  abstract changePassword(
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<void>;
 }

@@ -5,16 +5,18 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignUpByEmailDto } from './dto/sign-up-by-email.dto';
 import { LoginByEmailDto } from './dto/login-by-email.dto';
 import { UserCommonResponseDto } from './dto/user.common-reponse.dto';
-import { InvalidInputException } from '../../common/exception/bad-request.exception';
 import { ChangeGptKeyDto } from './dto/change-gpt-key.dto';
 import { UserGuard } from '../../common/guard/user.guard';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { Auth } from '../../common/auth/auth';
 
 @Controller('/users')
 export class UserController {
@@ -41,15 +43,15 @@ export class UserController {
     );
     return new UserCommonResponseDto({
       user,
-      data: { accessToken },
+      accessToken,
     });
   }
 
   @UseGuards(UserGuard)
   @Patch('/gpt-key')
-  async changeApiKey(@Body() dto: ChangeGptKeyDto) {
+  async changeApiKey(@Req() request, @Body() dto: ChangeGptKeyDto) {
     const { userId, gptKey } = dto;
-    if (!userId) throw new InvalidInputException('no userId');
+    Auth.checkSameUserWithToken(request, userId);
     const user = await this.userService.changeGptKey(userId, gptKey);
     return new UserCommonResponseDto({ user });
   }
@@ -57,13 +59,24 @@ export class UserController {
   @Get('/email')
   async findEmailByPhone(@Query('phone') phone: string) {
     const email = await this.userService.findEmail(phone);
-    return new UserCommonResponseDto({ data: { email } });
+    return new UserCommonResponseDto({ email });
   }
 
-  @Patch('/password')
+  @Patch('/password/reset')
   async resetPassword(@Body() dto: ResetPasswordDto) {
     const { email, phone } = dto;
     const password = await this.userService.resetPassword(email, phone);
     return new UserCommonResponseDto({ password });
+  }
+  @Patch('/password')
+  async changePassword(@Req() request, @Body() dto: ChangePasswordDto) {
+    const { userId, oldPassword, newPassword } = dto;
+    Auth.checkSameUserWithToken(request, userId);
+    const user = await this.userService.changePassword(
+      userId,
+      oldPassword,
+      newPassword,
+    );
+    return new UserCommonResponseDto({ user });
   }
 }
