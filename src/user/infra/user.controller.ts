@@ -5,17 +5,18 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignUpByEmailDto } from './dto/sign-up-by-email.dto';
 import { LoginByEmailDto } from './dto/login-by-email.dto';
 import { UserCommonResponseDto } from './dto/user.common-reponse.dto';
-import { InvalidInputException } from '../../common/exception/bad-request.exception';
 import { ChangeGptKeyDto } from './dto/change-gpt-key.dto';
 import { UserGuard } from '../../common/guard/user.guard';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { Auth } from '../../common/auth/auth';
 
 @Controller('/users')
 export class UserController {
@@ -48,9 +49,9 @@ export class UserController {
 
   @UseGuards(UserGuard)
   @Patch('/gpt-key')
-  async changeApiKey(@Body() dto: ChangeGptKeyDto) {
+  async changeApiKey(@Req() request, @Body() dto: ChangeGptKeyDto) {
     const { userId, gptKey } = dto;
-    if (!userId) throw new InvalidInputException('no userId');
+    Auth.checkSameUserWithToken(request, userId);
     const user = await this.userService.changeGptKey(userId, gptKey);
     return new UserCommonResponseDto({ user });
   }
@@ -68,8 +69,9 @@ export class UserController {
     return new UserCommonResponseDto({ password });
   }
   @Patch('/password')
-  async changePassword(@Body() dto: ChangePasswordDto) {
+  async changePassword(@Req() request, @Body() dto: ChangePasswordDto) {
     const { userId, oldPassword, newPassword } = dto;
+    Auth.checkSameUserWithToken(request, userId);
     const user = await this.userService.changePassword(
       userId,
       oldPassword,
