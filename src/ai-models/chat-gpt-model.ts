@@ -4,6 +4,7 @@ import { ModelProvider } from 'src/model-provider/model-provider';
 import { Completion } from 'src/topic/domain/completion/completion';
 import Config from '../config/config';
 import { CompleteOptions, IMessage } from '../common/interface/interface';
+import { ModelName } from '../common/enum/enum';
 
 const data = {
   model: 'gpt-3.5-turbo',
@@ -18,6 +19,7 @@ const headers = {
 };
 
 export class ChatGPTModel extends ModelProvider {
+  protected name = ModelName['GPT3.5_TURBO'];
   askQuestion(completion: Completion, options?: CompleteOptions): any {
     const messages = this.mapToMessages([
       completion,
@@ -97,18 +99,18 @@ export class ChatGPTModel extends ModelProvider {
         return [
           {
             role: 'user',
-            content: completion.getProps().question,
+            content: completion.getPropsCopy().question,
           },
         ];
       }
       return [
         {
           role: 'system',
-          content: completion.getProps().question,
+          content: completion.getPropsCopy().question,
         },
         {
           role: 'system',
-          content: completion.getProps().answer,
+          content: completion.getPropsCopy().answer,
         },
       ];
     });

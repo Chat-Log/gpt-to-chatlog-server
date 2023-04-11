@@ -6,11 +6,15 @@ import { ModelName } from '../common/enum/enum';
 
 export abstract class ModelProvider {
   protected tokenManager = new TokenManager();
-  protected name: ModelName;
+  protected abstract name: ModelName;
   abstract askQuestion(
     completion: Completion,
     completeOptions: CompleteOptions,
   ): Readable;
 
   abstract countToken(completions: Completion[]): number;
+
+  getName(): ModelName {
+    return this.name;
+  }
 }
