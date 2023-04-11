@@ -16,9 +16,6 @@ export class CompletionOrmEntity implements CompletionEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column()
-  userId: string;
-
   @CreateDateColumn()
   createdAt: Date;
 
@@ -37,6 +34,8 @@ export class CompletionOrmEntity implements CompletionEntity {
   @Column()
   tokenCount: number;
 
-  @ManyToOne(() => TopicOrmEntity, (topic) => topic.completions)
+  @ManyToOne(() => TopicOrmEntity, (topic) => topic.completions, {
+    cascade: ['update', 'insert'],
+  })
   topic: TopicEntity;
 }

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserOrmEntity } from './user.orm-entity';
 import { UserMapper } from './user.mapper';
+import { UserEntity } from '../domain/user.entity';
 
 @Injectable()
 export class UserOrmRepository extends BaseOrmRepository<User, UserEntity> {
