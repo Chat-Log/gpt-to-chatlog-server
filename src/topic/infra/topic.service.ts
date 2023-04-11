@@ -45,16 +45,17 @@ export class TopicService {
         where: { id: topicId, user: { id: userId } },
       });
     }
-    console.log(topic);
-    // const answerStream = topic.askToModel(this.chooseModel(model), question);
-    //
-    // answerStream.on('data', (data) => {});
-    // answerStream.on('end', async () => {
-    //   await this.topicRepository.save(topic);
-    // });
-    //
-    // return answerStream;
-    return null;
+    const answerStream = topic.askToModel(
+      this.chooseModel(modelName),
+      question,
+    );
+
+    answerStream.on('data', (data) => {});
+    answerStream.on('end', async () => {
+      await this.topicRepository.save(topic);
+    });
+
+    return answerStream;
   }
 
   async checkTagsOrCreate(userId: string, tagNames: string[]): Promise<Tag[]> {
