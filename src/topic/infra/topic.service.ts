@@ -1,9 +1,6 @@
 ﻿import { Injectable } from '@nestjs/common';
-import { ChatGPTModel } from 'src/ai-models/chat-gpt-model';
 import { TopicImpl } from './topic';
 import { Readable } from 'stream';
-import { ModelName } from '../../common/enum/enum';
-import { ModelProvider } from 'src/model-provider/model-provider';
 import { AskQuestionDto } from './dto/ask-question.dto';
 import { TopicOrmRepository } from './topic.orm-repository';
 import { TagOrmRepository } from './completion/tag/tag.orm-repository';
@@ -12,6 +9,7 @@ import { UserService } from '../../user/infra/user.service';
 import { TagImpl } from './completion/tag/tag';
 import { Tag } from '../domain/completion/tag/tag';
 import { Topic } from '../domain/topic';
+import { chooseModel } from '../../common/util/util';
 
 @Injectable()
 export class TopicService {
@@ -21,15 +19,6 @@ export class TopicService {
     private readonly completionRepository: CompletionOrmRepository,
     private readonly userService: UserService,
   ) {}
-
-  chooseModel(model: ModelName): ModelProvider {
-    switch (model) {
-      case ModelName['GPT3.5_TURBO']:
-        return new ChatGPTModel();
-      default:
-        return new ChatGPTModel();
-    }
-  }
 
   async makeCompletion(dto: AskQuestionDto, userId: string): Promise<Readable> {
     const { modelName, question, tagNames, topicId, prevCompletionIds } = dto;
@@ -45,10 +34,7 @@ export class TopicService {
         where: { id: topicId, user: { id: userId } },
       });
     }
-    const answerStream = topic.askToModel(
-      this.chooseModel(modelName),
-      question,
-    );
+    const answerStream = topic.askToModel(chooseModel(modelName), question);
 
     answerStream.on('data', (data) => {});
     answerStream.on('end', async () => {
