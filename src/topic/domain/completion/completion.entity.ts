@@ -1,4 +1,5 @@
 import { ModelName } from '../../../common/enum/enum';
+import { TopicEntity } from '../topic.entity';
 
 export interface CompletionEntity {
   id: string;
@@ -8,4 +9,5 @@ export interface CompletionEntity {
   tokenCount: number;
   createdAt: Date;
   updatedAt: Date;
+  topic: TopicEntity;
 }

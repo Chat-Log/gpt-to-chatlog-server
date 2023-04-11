@@ -2,14 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
 } from 'typeorm';
 import { TopicEntity } from '../domain/topic.entity';
 import { CompletionEntity } from '../domain/completion/completion.entity';
+import { UserOrmEntity } from '../../user/infra/user.orm-entity';
+import { CompletionOrmEntity } from './completion/completion.orm-entity';
 
-@Entity()
+@Entity('topics')
 export class TopicOrmEntity implements TopicEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: string;
 
   @Column()
@@ -21,7 +25,9 @@ export class TopicOrmEntity implements TopicEntity {
   @CreateDateColumn()
   updatedAt: Date;
 
+  @OneToMany(() => CompletionOrmEntity, (completion) => completion.topic)
   completions: CompletionEntity[];
 
+  @ManyToOne(() => UserOrmEntity, (user) => user.topics)
   user: UserEntity;
 }

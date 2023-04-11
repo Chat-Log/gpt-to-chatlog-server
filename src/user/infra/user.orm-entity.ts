@@ -2,11 +2,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { TopicOrmEntity } from '../../topic/infra/topic.orm-entity';
+import { TopicEntity } from '../../topic/domain/topic.entity';
+import { TagOrmEntity } from '../../topic/infra/completion/tag/tag.orm-entity';
+import { TagEntity } from '../../topic/domain/completion/tag/tag.entity';
+import { UserEntity } from '../domain/user.entity';
 
-@Entity()
+@Entity('users')
 export class UserOrmEntity implements UserEntity {
   @PrimaryColumn()
   id: string;
@@ -30,4 +36,10 @@ export class UserOrmEntity implements UserEntity {
   phone: string;
   @Column({ nullable: true })
   gptKey: string;
+
+  @OneToMany(() => TopicOrmEntity, (topic) => topic.user)
+  topics: TopicEntity[];
+
+  @OneToMany(() => TagOrmEntity, (tag) => tag.user)
+  tags: TagEntity[];
 }
