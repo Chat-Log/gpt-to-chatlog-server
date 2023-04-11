@@ -2,8 +2,9 @@ import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { TopicService } from './topic.service';
 import { AskQuestionDto } from './dto/ask-question.dto';
+import { GetUserIdFromAccessToken } from '../../common/decorator/get-userid-from-accesstoken.decorator';
 
-@Controller('/topics')
+@Controller()
 export class TopicController {
   constructor(private readonly topicService: TopicService) {}
 
@@ -21,12 +22,15 @@ export class TopicController {
     console.log(chat);
     return null;
   }
-  @Post('/completions')
-  async answerQuestion(@Body() dto: AskQuestionDto): Promise<string> {
+  @Post('/topics/completion')
+  async askQuestion(
+    @Body() dto: AskQuestionDto,
+    @GetUserIdFromAccessToken() userId: string,
+  ): Promise<string> {
     try {
-      this.topicService.makeCompletion(dto);
-    } catch {
-      console.log('error');
+      await this.topicService.makeCompletion(dto, userId);
+    } catch (err) {
+      console.log(err);
     }
     return null;
   }
