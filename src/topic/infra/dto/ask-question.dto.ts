@@ -26,7 +26,7 @@ export class AskQuestionDto {
 
   @IsOptional()
   @IsString()
-  topicId: string[];
+  topicId: string;
 
   @IsOptional()
   @IsArray()

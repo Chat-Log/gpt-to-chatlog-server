@@ -17,6 +17,7 @@ export class TopicService {
     private readonly tagRepository: TagOrmRepository,
     private readonly completionRepository: CompletionOrmRepository,
   ) {}
+
   chooseModel(model: Model): ModelProvider {
     switch (model) {
       case Model['GPT3.5_TURBO']:
@@ -30,7 +31,7 @@ export class TopicService {
     const { model, question, tags, topicId, prevCompletionIds } = dto;
     let topic;
     if (!topicId) {
-      topic = TopicImpl.createTopic([], new UserImpl());
+      topic = TopicImpl.createTopic([], new UserImpl({}));
     } else {
       topic = await this.topicRepository.findOne({ where: { id: topicId } });
     }
