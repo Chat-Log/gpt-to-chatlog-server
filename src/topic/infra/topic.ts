@@ -31,6 +31,7 @@ export class TopicImpl extends Topic {
   }
   askToModel(modelProvider: ModelProvider, question: string): Readable {
     this.createQuestion(modelProvider, question);
+    this.updateTopicTitle(question.slice(0, 20));
     let answer = '';
 
     let tokenCount = modelProvider.countToken(this.props.completions);
@@ -50,6 +51,7 @@ export class TopicImpl extends Topic {
     return resultStream;
   }
   private createQuestion(modelProvider: ModelProvider, question: string): void {
+    this.props.completions = this.props.completions || [];
     this.props.completions.push(
       CompletionImpl.createQuestion(modelProvider, question),
     );
