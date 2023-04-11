@@ -1,7 +1,12 @@
+import * as _ from 'lodash';
+
 export abstract class BaseDomainModel<Props> {
-  protected constructor(protected props: Partial<Props>) {}
+  props: Partial<Props>;
+  protected constructor(props: Partial<Props>) {
+    this.props = props;
+  }
 
   public getPropsCopy(): Partial<Props> {
-    return Object.freeze(this.props);
+    return _.cloneDeep(this.props);
   }
 }
