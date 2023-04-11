@@ -11,7 +11,7 @@ import { TopicProps } from '../domain/topic.props';
 export class TopicImpl extends Topic {
   private id: string;
   private title: string;
-  private tags: Tag[];
+  private tags: Tag[] = [];
   private completions: Completion[] = [];
   private user: User;
   private createdAt: Date;
@@ -72,5 +72,8 @@ export class TopicImpl extends Topic {
   }
   resumeTopic(completion: Completion) {
     this.completions.push(completion);
+  }
+  addTags(tags: Tag[]): void {
+    this.tags.push(...tags);
   }
 }

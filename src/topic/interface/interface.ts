@@ -1,10 +1,5 @@
 import { ModelProvider } from '../../model-provider/model-provider';
 
-export interface TagProps {
-  id: string;
-  name: string;
-}
-
 export interface CompletionProps {
   id: string;
   question: string;
