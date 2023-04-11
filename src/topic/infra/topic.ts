@@ -9,19 +9,11 @@ import { Readable } from 'stream';
 import { TopicProps } from '../domain/topic.props';
 
 export class TopicImpl extends Topic {
-  private id: string;
-  private title: string;
-  private tags: Tag[] = [];
-  private completions: Completion[] = [];
-  private user: User;
-  private createdAt: Date;
-  private updatedAt: Date;
-
   constructor(props: Partial<TopicProps>) {
     super(props);
   }
   updateTopicTitle(title: string): void {
-    this.title = title;
+    this.props.title = title;
   }
 
   static createTopic(tags: Tag[], user: User): Topic {
@@ -32,16 +24,16 @@ export class TopicImpl extends Topic {
     });
   }
   private getCurrentCompletion(): Completion {
-    return this.completions[this.completions.length - 1];
+    return this.props.completions[this.props.completions.length - 1];
   }
   private getPreviousCompletions(): Completion[] {
-    return this.completions.slice(0, this.completions.length - 1);
+    return this.props.completions.slice(0, this.props.completions.length - 1);
   }
   askToModel(modelProvider: ModelProvider, question: string): Readable {
     this.createQuestion(modelProvider, question);
     let answer = '';
 
-    let tokenCount = modelProvider.countToken(this.completions);
+    let tokenCount = modelProvider.countToken(this.props.completions);
 
     const resultStream = modelProvider.askQuestion(
       this.getCurrentCompletion(),
@@ -58,12 +50,12 @@ export class TopicImpl extends Topic {
     return resultStream;
   }
   private createQuestion(modelProvider: ModelProvider, question: string): void {
-    this.completions.push(
+    this.props.completions.push(
       CompletionImpl.createQuestion(modelProvider, question),
     );
   }
   reflectAnswerAndTokenCount(answer: string, tokenCount: number): void {
-    if (this.completions.length != 0) {
+    if (this.props.completions.length != 0) {
       this.getCurrentCompletion().reflectAnswerAndTokenCount(
         answer,
         tokenCount,
@@ -71,9 +63,9 @@ export class TopicImpl extends Topic {
     }
   }
   resumeTopic(completion: Completion) {
-    this.completions.push(completion);
+    this.props.completions.push(completion);
   }
   addTags(tags: Tag[]): void {
-    this.tags.push(...tags);
+    this.props.tags.push(...tags);
   }
 }
