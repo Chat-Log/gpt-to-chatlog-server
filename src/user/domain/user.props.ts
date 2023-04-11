@@ -1,3 +1,6 @@
+import { Topic } from '../../topic/domain/topic';
+import { Tag } from '../../topic/domain/completion/tag/tag';
+
 export interface UserProps {
   id: string;
   name: string;
@@ -7,4 +10,6 @@ export interface UserProps {
   createdAt: Date;
   updatedAt: Date;
   gptKey: string;
+  topics: Topic[];
+  tags: Tag[];
 }
