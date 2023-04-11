@@ -5,16 +5,16 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Model } from 'src/common/enum/enum';
+import { ModelName } from '../../../common/enum/enum';
 
 export class AskQuestionDto {
   @IsString()
   @IsNotEmpty()
   userId: string;
 
-  @IsEnum(Model)
+  @IsEnum(ModelName)
   @IsNotEmpty()
-  model: Model;
+  modelName: ModelName;
 
   @IsNotEmpty()
   @IsString()
@@ -22,7 +22,7 @@ export class AskQuestionDto {
 
   @IsNotEmpty()
   @IsArray()
-  tags: string[];
+  tagNames: string[];
 
   @IsOptional()
   @IsString()
