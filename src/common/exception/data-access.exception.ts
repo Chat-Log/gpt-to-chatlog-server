@@ -18,6 +18,11 @@ export class DataSaveFailedException extends DataAccessAccessException {
     super(ErrorStatusCode.DATA_SAVE_FAILED, message);
   }
 }
+export class TransactionFailedException extends DataAccessAccessException {
+  constructor(message: string) {
+    super(ErrorStatusCode.TRANSACTION_FAILED, message);
+  }
+}
 
 export class ForeignKeyConstraintFailedException extends DataAccessAccessException {
   constructor(message: string) {
