@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid';
 import { Tag } from '../domain/completion/tag/tag';
 import { Readable } from 'stream';
 import { TopicProps } from '../domain/topic.props';
+import { TagImpl } from './completion/tag/tag';
 
 export class TopicImpl extends Topic {
   constructor(props: Partial<TopicProps>) {
@@ -16,9 +17,9 @@ export class TopicImpl extends Topic {
     this.props.title = title;
   }
 
-  static createTopic(tags: Tag[], user: User): Topic {
+  static createTopic(tagNames: string[], user: User): Topic {
     return new TopicImpl({
-      tags,
+      tags: tagNames.map((tagName) => TagImpl.create(tagName)),
       user,
       id: uuid(),
     });

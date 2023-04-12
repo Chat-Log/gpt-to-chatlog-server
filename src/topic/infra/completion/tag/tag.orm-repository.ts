@@ -12,15 +12,4 @@ export class TagOrmRepository extends BaseOrmRepository<Tag, TagEntity> {
   ) {
     super(repository, new TagMapper());
   }
-
-  async findTagInNames(userId, names: string[]): Promise<Tag[]> {
-    const tags = await this.repository
-      .createQueryBuilder('tag')
-      .where('tag.name IN (:...names)', {
-        names,
-      })
-      .andWhere('tag.userId = :userId', { userId })
-      .getMany();
-    return tags.map((tag) => this.mapper.toModel(tag));
-  }
 }
