@@ -38,7 +38,9 @@ export class TopicOrmEntity implements TopicEntity {
   @ManyToOne(() => UserOrmEntity, (user) => user.topics)
   user: UserEntity;
 
-  @ManyToMany(() => TagOrmEntity, (tag) => tag.topics)
+  @ManyToMany(() => TagOrmEntity, (tag) => tag.topics, {
+    cascade: ['update', 'insert'],
+  })
   @JoinTable()
   tags: TagEntity[];
 }
