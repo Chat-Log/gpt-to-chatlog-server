@@ -2,7 +2,6 @@ import { User } from '../domain/user';
 import { UserImpl } from './user';
 import { UserEntity } from '../domain/user.entity';
 import { TopicMapper } from '../../topic/infra/topic.mapper';
-import { TagMapper } from '../../topic/infra/completion/tag/tag.mapper';
 
 export class UserMapper implements BaseMapper<User, UserEntity> {
   toEntity(model: User): UserEntity {
@@ -29,7 +28,6 @@ export class UserMapper implements BaseMapper<User, UserEntity> {
       email,
       password,
       topics: topics?.map((topic) => new TopicMapper().toEntity(topic)),
-      tags: tags?.map((tag) => new TagMapper().toEntity(tag)),
     };
   }
 

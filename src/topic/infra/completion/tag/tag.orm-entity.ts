@@ -2,13 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
+  ManyToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { IsUUID } from 'class-validator';
 import { TagEntity } from '../../../domain/completion/tag/tag.entity';
-import { UserOrmEntity } from '../../../../user/infra/user.orm-entity';
+import { Topic } from '../../../domain/topic';
+import { TopicOrmEntity } from '../../topic.orm-entity';
 
 @Entity('tags')
 export class TagOrmEntity implements TagEntity {
@@ -25,6 +26,6 @@ export class TagOrmEntity implements TagEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => UserOrmEntity, (user) => user.tags)
-  user: UserOrmEntity;
+  @ManyToMany(() => TopicOrmEntity, (topic) => topic.tags)
+  topics: Topic[];
 }

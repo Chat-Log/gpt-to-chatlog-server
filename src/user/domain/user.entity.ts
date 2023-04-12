@@ -1,5 +1,4 @@
 import { TopicEntity } from '../../topic/domain/topic.entity';
-import { TagEntity } from '../../topic/domain/completion/tag/tag.entity';
 
 export interface UserEntity {
   id: string;
@@ -11,5 +10,4 @@ export interface UserEntity {
   createdAt: Date;
   updatedAt: Date;
   topics: TopicEntity[];
-  tags: TagEntity[];
 }

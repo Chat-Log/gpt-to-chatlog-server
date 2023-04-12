@@ -8,8 +8,6 @@ import {
 } from 'typeorm';
 import { TopicOrmEntity } from '../../topic/infra/topic.orm-entity';
 import { TopicEntity } from '../../topic/domain/topic.entity';
-import { TagOrmEntity } from '../../topic/infra/completion/tag/tag.orm-entity';
-import { TagEntity } from '../../topic/domain/completion/tag/tag.entity';
 import { UserEntity } from '../domain/user.entity';
 
 @Entity('users')
@@ -39,7 +37,4 @@ export class UserOrmEntity implements UserEntity {
 
   @OneToMany(() => TopicOrmEntity, (topic) => topic.user)
   topics: TopicEntity[];
-
-  @OneToMany(() => TagOrmEntity, (tag) => tag.user)
-  tags: TagEntity[];
 }
