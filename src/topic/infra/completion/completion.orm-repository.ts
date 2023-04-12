@@ -4,8 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Completion } from '../../domain/completion/completion';
 import { BaseOrmRepository } from '../../../common/base.orm-repository';
 import { CompletionEntity } from '../../domain/completion/completion.entity';
-import { IFindOneOptions } from '../../../common/interface/interface';
-import { DeepPartial, Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -19,9 +18,8 @@ export class CompletionOrmRepository extends BaseOrmRepository<
   ) {
     super(repository, new CompletionMapper());
   }
-  protected getFindOneQuery(
-    options: IFindOneOptions<DeepPartial<CompletionEntity>>,
-  ): SelectQueryBuilder<CompletionEntity> {
-    return undefined;
+
+  prepareQuery(): SelectQueryBuilder<CompletionEntity> {
+    return this.repository.createQueryBuilder('completion');
   }
 }

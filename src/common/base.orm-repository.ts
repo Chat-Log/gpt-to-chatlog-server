@@ -87,11 +87,12 @@ export abstract class BaseOrmRepository<Model, Entity>
       metadata: {},
     };
   }
+  abstract prepareQuery(): SelectQueryBuilder<Entity>;
 
   protected prepareFindOneQuery(
     options: IFindOneOptions<DeepPartial<Entity>>,
   ): SelectQueryBuilder<Entity> {
-    const query = this.repository.createQueryBuilder();
+    const query = this.prepareQuery();
     const { where, andWhere, orderBy, andWhere2, having } = options;
 
     if (having) {

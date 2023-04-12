@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Repository, SelectQueryBuilder } from 'typeorm';
 import { Topic } from '../domain/topic';
 import { TopicOrmEntity } from './topic.orm-entity';
 import { TopicEntity } from '../domain/topic.entity';
@@ -34,5 +34,9 @@ export class TopicOrmRepository extends BaseOrmRepository<Topic, TopicEntity> {
     }
 
     return new TopicMapper().toModel(await query.getOne());
+  }
+
+  prepareQuery(): SelectQueryBuilder<TopicEntity> {
+    return this.repository.createQueryBuilder('topic');
   }
 }

@@ -1,6 +1,6 @@
 import { BaseOrmRepository } from '../../../../common/base.orm-repository';
 import { Tag } from '../../../domain/completion/tag/tag';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { TagEntity } from '../../../domain/completion/tag/tag.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagOrmEntity } from './tag.orm-entity';
@@ -11,5 +11,9 @@ export class TagOrmRepository extends BaseOrmRepository<Tag, TagEntity> {
     @InjectRepository(TagOrmEntity) repository: Repository<TagEntity>,
   ) {
     super(repository, new TagMapper());
+  }
+
+  prepareQuery(): SelectQueryBuilder<TagEntity> {
+    return this.repository.createQueryBuilder('tag');
   }
 }
