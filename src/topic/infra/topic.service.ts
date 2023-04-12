@@ -6,9 +6,9 @@ import { TopicOrmRepository } from './topic.orm-repository';
 import { TagOrmRepository } from './completion/tag/tag.orm-repository';
 import { CompletionOrmRepository } from './completion/completion.orm-repository';
 import { UserService } from '../../user/infra/user.service';
-import { TagImpl } from './completion/tag/tag';
 import { Tag } from '../domain/completion/tag/tag';
 import { Topic } from '../domain/topic';
+import { TagImpl } from './completion/tag/tag';
 import { chooseModel } from '../../common/util/util';
 
 @Injectable()
@@ -26,6 +26,7 @@ export class TopicService {
     let topic: Topic;
 
     const tags = await this.checkTagsOrCreate(userId, tagNames);
+
     if (!topicId) {
       topic = TopicImpl.createTopic(tags, user);
     } else {
@@ -33,6 +34,7 @@ export class TopicService {
         completionIdsIn: prevCompletionIds,
         where: { id: topicId, user: { id: userId } },
       });
+      topic.addTags(tags);
     }
     const answerStream = topic.askToModel(chooseModel(modelName), question);
 
@@ -46,11 +48,13 @@ export class TopicService {
 
   async checkTagsOrCreate(userId: string, tagNames: string[]): Promise<Tag[]> {
     const tags = await this.tagRepository.findTagInNames(userId, tagNames);
-    const newTagNames = tagNames.filter((tag) => !tagNames.includes(tag));
+    const newTagNames = tagNames.filter(
+      (tagName) => !tags.some((tag) => tag.getPropsCopy().name === tagName),
+    );
     let newTags: Tag[] = [];
     if (newTagNames.length > 0) {
       newTags = newTagNames.map((tagName) => {
-        return new TagImpl({ name: tagName });
+        return TagImpl.create(tagName);
       });
     }
     return [...tags, ...newTags];
