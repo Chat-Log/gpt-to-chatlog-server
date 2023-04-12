@@ -13,8 +13,8 @@ import { CompletionEntity } from '../domain/completion/completion.entity';
 import { UserOrmEntity } from '../../user/infra/user.orm-entity';
 import { CompletionOrmEntity } from './completion/completion.orm-entity';
 import { UserEntity } from '../../user/domain/user.entity';
-import { Tag } from '../domain/completion/tag/tag';
 import { TagOrmEntity } from './completion/tag/tag.orm-entity';
+import { TagEntity } from '../domain/completion/tag/tag.entity';
 
 @Entity('topics')
 export class TopicOrmEntity implements TopicEntity {
@@ -38,7 +38,7 @@ export class TopicOrmEntity implements TopicEntity {
   @ManyToOne(() => UserOrmEntity, (user) => user.topics)
   user: UserEntity;
 
-  @ManyToMany(() => TagOrmEntity)
+  @ManyToMany(() => TagOrmEntity, (tag) => tag.topics)
   @JoinTable()
-  tags: Tag[];
+  tags: TagEntity[];
 }

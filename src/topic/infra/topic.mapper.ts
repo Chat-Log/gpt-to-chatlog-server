@@ -3,11 +3,12 @@ import { TopicEntity } from '../domain/topic.entity';
 import { CompletionMapper } from './completion/completion.mapper';
 import { UserMapper } from '../../user/infra/user.mapper';
 import { TopicImpl } from './topic';
+import { TagMapper } from './completion/tag/tag.mapper';
 
 export class TopicMapper implements BaseMapper<Topic, TopicEntity> {
   toEntity(model: Topic): TopicEntity {
     if (!model) return null;
-    const { id, title, completions, updatedAt, user, createdAt } =
+    const { id, title, completions, updatedAt, user, createdAt, tags } =
       model.getPropsCopy();
 
     return {
@@ -19,6 +20,7 @@ export class TopicMapper implements BaseMapper<Topic, TopicEntity> {
       user: new UserMapper().toEntity(user),
       createdAt,
       updatedAt,
+      tags: tags.map((tag) => new TagMapper().toEntity(tag)),
     };
   }
 
