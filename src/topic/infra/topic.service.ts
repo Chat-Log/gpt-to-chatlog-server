@@ -22,7 +22,7 @@ export class TopicService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async makeCompletion(dto: AskQuestionDto, userId: string): Promise<Readable> {
+  async askQuestion(dto: AskQuestionDto, userId: string): Promise<Readable> {
     const { modelName, question, tagNames, topicId, prevCompletionIds } = dto;
     const user = await this.userService.findUserByIdOrThrowError(userId);
     let topic: Topic;
