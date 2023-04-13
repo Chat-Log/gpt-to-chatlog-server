@@ -7,7 +7,7 @@ export class CompletionMapper
   implements BaseMapper<Completion, CompletionEntity>
 {
   toEntity(completion: Completion): CompletionEntity {
-    if (!completion) return null;
+    if (!completion) return;
     const { id, answer, tokenCount, createdAt, updatedAt, model, question } =
       completion.getPropsCopy();
     return {
@@ -16,13 +16,13 @@ export class CompletionMapper
       tokenCount,
       createdAt,
       updatedAt,
-      modelName: model.getName(),
+      modelName: model?.getName(),
       question,
     };
   }
 
   toModel(entity: CompletionEntity): Completion {
-    if (!entity) return null;
+    if (!entity) return;
     const {
       id,
       answer,

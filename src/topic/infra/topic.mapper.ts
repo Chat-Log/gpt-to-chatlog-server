@@ -7,30 +7,31 @@ import { TagMapper } from './completion/tag/tag.mapper';
 
 export class TopicMapper implements BaseMapper<Topic, TopicEntity> {
   toEntity(model: Topic): TopicEntity {
-    if (!model) return null;
+    if (!model) return;
     const { id, title, completions, updatedAt, user, createdAt, tags } =
       model.getPropsCopy();
 
     return {
       title,
       id,
-      completions: completions.map((completion) =>
+      completions: completions?.map((completion) =>
         new CompletionMapper().toEntity(completion),
       ),
       user: new UserMapper().toEntity(user),
       createdAt,
       updatedAt,
-      tags: tags.map((tag) => new TagMapper().toEntity(tag)),
+      tags: tags?.map((tag) => new TagMapper().toEntity(tag)),
     };
   }
 
   toModel(entity: TopicEntity): Topic {
-    if (!entity) return null;
+    console.log(entity);
+    if (!entity) return;
     const { id, title, completions, updatedAt, user, createdAt } = entity;
     return new TopicImpl({
       id,
       title,
-      completions: completions.map((completion) =>
+      completions: completions?.map((completion) =>
         new CompletionMapper().toModel(completion),
       ),
       user: new UserMapper().toModel(user),

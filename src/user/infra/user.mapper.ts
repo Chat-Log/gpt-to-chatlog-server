@@ -5,7 +5,7 @@ import { TopicMapper } from '../../topic/infra/topic.mapper';
 
 export class UserMapper implements BaseMapper<User, UserEntity> {
   toEntity(model: User): UserEntity {
-    if (!model) return null;
+    if (!model) return;
     const {
       id,
       email,
@@ -32,7 +32,7 @@ export class UserMapper implements BaseMapper<User, UserEntity> {
   }
 
   toModel(entity: UserEntity): User {
-    if (!entity) return null;
+    if (!entity) return;
     const user = new UserImpl({
       id: entity.id,
       email: entity.email,
