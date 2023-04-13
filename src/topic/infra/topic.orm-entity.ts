@@ -2,8 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryColumn,
@@ -38,9 +36,8 @@ export class TopicOrmEntity implements TopicEntity {
   @ManyToOne(() => UserOrmEntity, (user) => user.topics, { nullable: false })
   user: UserEntity;
 
-  @ManyToMany(() => TagOrmEntity, (tag) => tag.topics, {
-    cascade: ['update', 'insert'],
+  @OneToMany(() => TagOrmEntity, (tag) => tag.topics, {
+    cascade: ['update', 'insert', 'remove'],
   })
-  @JoinTable()
   tags: TagEntity[];
 }

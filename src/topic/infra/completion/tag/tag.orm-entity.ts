@@ -2,7 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
+  ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,6 +26,6 @@ export class TagOrmEntity implements TagEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToMany(() => TopicOrmEntity, (topic) => topic.tags, {})
+  @ManyToOne(() => TopicOrmEntity, (topic) => topic.tags, {})
   topics: TopicEntity[];
 }
