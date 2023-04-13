@@ -35,7 +35,7 @@ export class TopicOrmEntity implements TopicEntity {
   })
   completions: CompletionEntity[];
 
-  @ManyToOne(() => UserOrmEntity, (user) => user.topics)
+  @ManyToOne(() => UserOrmEntity, (user) => user.topics, { nullable: false })
   user: UserEntity;
 
   @ManyToMany(() => TagOrmEntity, (tag) => tag.topics, {
