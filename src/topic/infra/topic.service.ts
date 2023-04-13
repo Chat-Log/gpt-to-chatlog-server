@@ -51,6 +51,14 @@ export class TopicService {
 
     return answerStream;
   }
+  async changeTopicTitle(topicId: string, topicName: string): Promise<Topic> {
+    const topic = await this.topicRepository.findOneWithCompletionsAndTags({
+      where: { id: topicId },
+    });
+    topic.changeTopicTitle(topicName);
+    await this.topicRepository.save(topic);
+    return topic;
+  }
 
   getHello(): string {
     return 'Hello World!';

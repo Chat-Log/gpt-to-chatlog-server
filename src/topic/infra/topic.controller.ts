@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { TopicService } from './topic.service';
 import { AskQuestionDto } from './dto/ask-question.dto';
 import { GetUserIdFromAccessToken } from '../../common/decorator/get-userid-from-accesstoken.decorator';
+import { ChangeTopicTitleDto } from './dto/change-topic-title.dto';
 
 @Controller()
 export class TopicController {
@@ -29,5 +39,14 @@ export class TopicController {
   ): Promise<string> {
     await this.topicService.askQuestion(dto, userId);
     return null;
+  }
+
+  @Patch('/topics/:topicId/name')
+  async changeTopicTitle(
+    @Body() dto: ChangeTopicTitleDto,
+    @Param('topicId') topicId: string,
+  ) {
+    const { title } = dto;
+    return await this.topicService.changeTopicTitle(topicId, title);
   }
 }
