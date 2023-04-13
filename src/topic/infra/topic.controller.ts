@@ -27,11 +27,7 @@ export class TopicController {
     @Body() dto: AskQuestionDto,
     @GetUserIdFromAccessToken() userId: string,
   ): Promise<string> {
-    try {
-      await this.topicService.makeCompletion(dto, userId);
-    } catch (err) {
-      console.log(err);
-    }
+    await this.topicService.askQuestion(dto, userId);
     return null;
   }
 }
