@@ -1,6 +1,6 @@
-import { ModelProvider } from 'src/model-provider/model-provider';
-import { Completion } from 'src/topic/domain/completion/completion';
+import { Completion } from '../../domain/completion/completion';
 import { CompletionProps } from '../../interface/interface';
+import { ModelProvider } from '../../../model-provider/model-provider';
 
 export class CompletionImpl extends Completion {
   constructor(props: Partial<CompletionProps>) {

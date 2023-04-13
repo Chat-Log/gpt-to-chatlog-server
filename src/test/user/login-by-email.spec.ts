@@ -1,7 +1,5 @@
 import { UserService } from '../../user/infra/user.service';
 import { UserImpl } from '../../user/infra/user';
-import { BaseRepository } from '../../common/base.repository';
-import { User } from '../../user/domain/user';
 import { Test } from '@nestjs/testing';
 import { UserOrmRepository } from '../../user/infra/user.orm-repository';
 import {
@@ -12,7 +10,7 @@ import { Auth } from '../../common/auth/auth';
 
 describe('UserService', () => {
   let userService: UserService;
-  let userRepository: BaseRepository<User, UserEntity>;
+  let userRepository: UserOrmRepository;
 
   beforeEach(async () => {
     const mockRepository = {

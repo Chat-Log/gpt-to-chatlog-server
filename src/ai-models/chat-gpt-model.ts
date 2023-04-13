@@ -1,10 +1,10 @@
 import { Readable } from 'stream';
 import axios from 'axios';
-import { ModelProvider } from 'src/model-provider/model-provider';
-import { Completion } from 'src/topic/domain/completion/completion';
 import Config from '../config/config';
 import { CompleteOptions, IMessage } from '../common/interface/interface';
 import { ModelName } from '../common/enum/enum';
+import { ModelProvider } from '../model-provider/model-provider';
+import { Completion } from '../topic/domain/completion/completion';
 
 const data = {
   model: 'gpt-3.5-turbo',

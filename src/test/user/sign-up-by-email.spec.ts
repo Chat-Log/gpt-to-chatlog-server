@@ -1,14 +1,12 @@
 import { UserService } from '../../user/infra/user.service';
 import { UserImpl } from '../../user/infra/user';
-import { BaseRepository } from '../../common/base.repository';
-import { User } from '../../user/domain/user';
 import { Test } from '@nestjs/testing';
 import { UserOrmRepository } from '../../user/infra/user.orm-repository';
 import { DataConflictException } from '../../common/exception/data-access.exception';
 
 describe('UserService', () => {
   let userService: UserService;
-  let userRepository: BaseRepository<User, UserEntity>;
+  let userRepository: UserOrmRepository;
 
   beforeEach(async () => {
     const mockRepository = {
