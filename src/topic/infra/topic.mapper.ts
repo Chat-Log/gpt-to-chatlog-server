@@ -25,9 +25,8 @@ export class TopicMapper implements BaseMapper<Topic, TopicEntity> {
   }
 
   toModel(entity: TopicEntity): Topic {
-    console.log(entity);
     if (!entity) return;
-    const { id, title, completions, updatedAt, user, createdAt } = entity;
+    const { id, title, completions, updatedAt, user, createdAt, tags } = entity;
     return new TopicImpl({
       id,
       title,
@@ -37,6 +36,7 @@ export class TopicMapper implements BaseMapper<Topic, TopicEntity> {
       user: new UserMapper().toModel(user),
       createdAt,
       updatedAt,
+      tags: tags?.map((tag) => new TagMapper().toModel(tag)),
     });
   }
 }

@@ -12,3 +12,9 @@ export class UnknownException extends InternalException {
     super(ErrorStatusCode.UNKNOWN_EXCEPTION, message);
   }
 }
+
+export class NullOrUndefinedParameterException extends InternalException {
+  constructor(message: string) {
+    super(ErrorStatusCode.NULL_OR_UNDEFINED_PARAMETER, message);
+  }
+}

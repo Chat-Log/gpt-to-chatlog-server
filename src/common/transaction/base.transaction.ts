@@ -9,7 +9,7 @@ import {
 export abstract class BaseTransaction<InputData> {
   protected constructor(private readonly dataSource: DataSource) {}
 
-  protected abstract execute(data: any, manager: EntityManager): any;
+  protected abstract execute(data: InputData, manager: EntityManager): any;
 
   private async createRunner(): Promise<QueryRunner> {
     return this.dataSource.createQueryRunner();

@@ -19,4 +19,5 @@ export enum ErrorStatusCode {
 
   //internal
   UNKNOWN_EXCEPTION = '4501',
+  NULL_OR_UNDEFINED_PARAMETER = '4506',
 }
