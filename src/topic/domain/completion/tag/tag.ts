@@ -6,4 +6,5 @@ export abstract class Tag extends BaseDomainModel<TagProps> {
     super(props);
   }
   abstract updateTagTitle(name: string): void;
+  abstract delete(): void;
 }

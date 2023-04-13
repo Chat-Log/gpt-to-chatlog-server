@@ -69,6 +69,32 @@ export class TopicImpl extends Topic {
     this.props.completions.push(completion);
   }
   addTags(tags: Tag[]): void {
-    this.props.tags.push(...tags);
+    this.props.tags?.push(...tags);
+  }
+  deleteTags(tags: Tag[]): void {
+    this.props.tags?.forEach((tag) => {
+      if (tags?.find((tagToRemove) => tagToRemove.props.id == tag.props.id)) {
+        tag.delete();
+      }
+    });
+  }
+
+  public syncTagsWithNewTagNames(
+    tagNames: string[],
+    deleteOtherTags: boolean = false,
+  ): void {
+    const newTags = tagNames
+      .filter(
+        (tagName) => !this.props.tags?.find((tag) => tag.props.name == tagName),
+      )
+      .map((tagName) => TagImpl.create(tagName));
+    this.addTags(newTags);
+
+    if (deleteOtherTags) {
+      const deletedTags = this.props.tags?.filter(
+        (tag) => !tagNames?.find((tagName) => tagName == tag.props.name),
+      );
+      this.deleteTags(deletedTags);
+    }
   }
 }

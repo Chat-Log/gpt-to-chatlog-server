@@ -9,6 +9,9 @@ export class TagImpl extends Tag {
   static create(name: string) {
     return new TagImpl({ id: uuid(), name });
   }
+  delete(): void {
+    this.props.isDeleted = true;
+  }
 
   updateTagTitle(name: string): void {}
 }
