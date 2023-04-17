@@ -6,3 +6,10 @@ export enum ModelName {
 export enum UserRole {
   'USER' = 'user',
 }
+
+export enum SearchType {
+  QUESTION = 'question',
+  ANSWER = 'answer',
+  TOPIC_TITLE = 'topic_title',
+  ALL = 'all',
+}

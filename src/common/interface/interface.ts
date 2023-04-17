@@ -1,5 +1,6 @@
 import { DeepPartial } from 'typeorm';
 import { Completion } from '../../topic/domain/completion/completion';
+import { ModelName, SearchType } from '../enum/enum';
 
 export interface IFindManyResult<Model> {
   data: Model[];
@@ -44,4 +45,25 @@ export interface IMessage {
 
 export interface CompleteOptions {
   previousCompletions: Completion[];
+}
+
+export interface SearchCompletionsWithTopicOptions {
+  query: string;
+  pageIndex: number;
+  pageSize: number;
+  modelNames: ModelName[];
+  date: Date;
+  searchType: SearchType;
+  onlyLastCompletions: boolean;
+  tagNames: string[];
+}
+
+export interface SearchCompletionsWithTopicResult {
+  completionId: string;
+  question: string;
+  answer: string;
+  topicTitle: string;
+  tagNames: string[];
+  createdAt: Date;
+  modelName: ModelName;
 }
