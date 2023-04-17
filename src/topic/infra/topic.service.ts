@@ -11,6 +11,7 @@ import { chooseModel } from '../../common/util/util';
 import { DataNotFoundException } from '../../common/exception/data-access.exception';
 import { DataSource } from 'typeorm';
 import { SaveTopicSyncTagsTransaction } from './transaction/save-topic-sync-tags.transaction';
+import { SearchCompletionsWithTopicOptions } from '../../common/interface/interface';
 
 @Injectable()
 export class TopicService {
@@ -64,5 +65,9 @@ export class TopicService {
 
   getHello(): string {
     return 'Hello World!';
+  }
+
+  async searchCompletionsWithTopic(options: SearchCompletionsWithTopicOptions) {
+    return await this.completionRepository.searchCompletionsWithTopic(options);
   }
 }
