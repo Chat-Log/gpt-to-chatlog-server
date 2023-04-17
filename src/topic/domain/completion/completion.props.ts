@@ -1,4 +1,4 @@
-import { ModelProvider } from '../../model-provider/model-provider';
+import { ModelProvider } from '../../../model-provider/model-provider';
 
 export interface CompletionProps {
   id: string;

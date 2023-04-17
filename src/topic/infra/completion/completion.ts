@@ -1,5 +1,5 @@
 import { Completion } from '../../domain/completion/completion';
-import { CompletionProps } from '../../interface/interface';
+import { CompletionProps } from '../../domain/completion/completion.props';
 import { ModelProvider } from '../../../model-provider/model-provider';
 
 export class CompletionImpl extends Completion {

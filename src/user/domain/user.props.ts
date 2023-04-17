@@ -1,5 +1,5 @@
 import { Topic } from '../../topic/domain/topic';
-import { Tag } from '../../topic/domain/completion/tag/tag';
+import { Tag } from '../../topic/domain/tag/tag';
 
 export interface UserProps {
   id: string;

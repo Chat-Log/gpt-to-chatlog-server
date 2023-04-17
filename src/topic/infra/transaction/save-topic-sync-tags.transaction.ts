@@ -3,8 +3,8 @@ import { Topic } from '../../domain/topic';
 import { DataSource, EntityManager } from 'typeorm';
 import { TopicMapper } from '../topic.mapper';
 import { TopicOrmEntity } from '../topic.orm-entity';
-import { TagMapper } from '../completion/tag/tag.mapper';
-import { TagOrmEntity } from '../completion/tag/tag.orm-entity';
+import { TagMapper } from '../tag/tag.mapper';
+import { TagOrmEntity } from '../tag/tag.orm-entity';
 
 interface InputData {
   topic: Topic;

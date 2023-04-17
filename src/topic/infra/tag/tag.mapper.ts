@@ -1,5 +1,5 @@
-import { TagEntity } from '../../../domain/completion/tag/tag.entity';
-import { Tag } from '../../../domain/completion/tag/tag';
+import { TagEntity } from '../../domain/tag/tag.entity';
+import { Tag } from '../../domain/tag/tag';
 import { TagImpl } from './tag';
 
 export class TagMapper implements BaseMapper<Tag, TagEntity> {

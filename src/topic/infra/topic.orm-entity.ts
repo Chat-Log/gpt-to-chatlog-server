@@ -11,8 +11,8 @@ import { CompletionEntity } from '../domain/completion/completion.entity';
 import { UserOrmEntity } from '../../user/infra/user.orm-entity';
 import { CompletionOrmEntity } from './completion/completion.orm-entity';
 import { UserEntity } from '../../user/domain/user.entity';
-import { TagOrmEntity } from './completion/tag/tag.orm-entity';
-import { TagEntity } from '../domain/completion/tag/tag.entity';
+import { TagOrmEntity } from './tag/tag.orm-entity';
+import { TagEntity } from '../domain/tag/tag.entity';
 
 @Entity('topics')
 export class TopicOrmEntity implements TopicEntity {

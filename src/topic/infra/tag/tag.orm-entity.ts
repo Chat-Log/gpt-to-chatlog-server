@@ -7,9 +7,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { IsUUID } from 'class-validator';
-import { TagEntity } from '../../../domain/completion/tag/tag.entity';
-import { TopicOrmEntity } from '../../topic.orm-entity';
-import { TopicEntity } from '../../../domain/topic.entity';
+import { TagEntity } from '../../domain/tag/tag.entity';
+import { TopicOrmEntity } from '../topic.orm-entity';
+import { TopicEntity } from '../../domain/topic.entity';
 
 @Entity('tags')
 export class TagOrmEntity implements TagEntity {

@@ -3,7 +3,7 @@ import { TopicImpl } from './topic';
 import { Readable } from 'stream';
 import { AskQuestionDto } from './dto/ask-question.dto';
 import { TopicOrmRepository } from './topic.orm-repository';
-import { TagOrmRepository } from './completion/tag/tag.orm-repository';
+import { TagOrmRepository } from './tag/tag.orm-repository';
 import { CompletionOrmRepository } from './completion/completion.orm-repository';
 import { UserService } from '../../user/infra/user.service';
 import { Topic } from '../domain/topic';
@@ -55,6 +55,8 @@ export class TopicService {
     const topic = await this.topicRepository.findOneWithCompletionsAndTags({
       where: { id: topicId },
     });
+    if (!topic)
+      throw new DataNotFoundException('topic not found with id : ' + topicId);
     topic.changeTopicTitle(topicName);
     await this.topicRepository.save(topic);
     return topic;

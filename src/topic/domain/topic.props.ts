@@ -1,5 +1,5 @@
 import { Completion } from './completion/completion';
-import { Tag } from './completion/tag/tag';
+import { Tag } from './tag/tag';
 import { User } from '../../user/domain/user';
 
 export interface TopicProps {

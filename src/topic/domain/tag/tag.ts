@@ -1,4 +1,4 @@
-import { BaseDomainModel } from '../../../../common/base.domain-model';
+import { BaseDomainModel } from '../../../common/base.domain-model';
 import { TagProps } from './tag.props';
 
 export abstract class Tag extends BaseDomainModel<TagProps> {
