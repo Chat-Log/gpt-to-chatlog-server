@@ -13,6 +13,9 @@ import { TopicService } from './topic.service';
 import { AskQuestionDto } from './dto/ask-question.dto';
 import { GetUserIdFromAccessToken } from '../../common/decorator/get-userid-from-accesstoken.decorator';
 import { ChangeTopicTitleDto } from './dto/change-topic-title.dto';
+import { SearchCompletionsDto } from './dto/search-completions.dto';
+import { SearchCompletionsWithTopicOptions } from '../../common/interface/interface';
+import { TopicCommonResponseDto } from './dto/topic.common-response.dto';
 
 @Controller()
 export class TopicController {
@@ -48,5 +51,34 @@ export class TopicController {
   ) {
     const { title } = dto;
     return await this.topicService.changeTopicTitle(topicId, title);
+  }
+
+  @Get('/topics/completions')
+  async searchCompletions(@Query() dto: SearchCompletionsDto) {
+    const {
+      tagnames: tagNames,
+      onlylastcompletions: onlyLastCompletions,
+      modelnames: modelNames,
+      date,
+      searchtype: searchType,
+      pagesize: pageSize = 10,
+      pageindex: pageIndex = 1,
+      query,
+    } = dto;
+    const options: SearchCompletionsWithTopicOptions = {
+      tagNames,
+      onlyLastCompletions,
+      modelNames,
+      date,
+      searchType,
+      pageSize: +pageSize,
+      pageIndex: +pageIndex,
+      query,
+    };
+    const [completions, pageTotalCount] =
+      await this.topicService.searchCompletionsWithTopic(options);
+    return new TopicCommonResponseDto().toResponse(completions, {
+      pageTotalCount,
+    });
   }
 }

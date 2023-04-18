@@ -31,7 +31,7 @@ export class UserController {
       phone,
       name,
     );
-    return new UserCommonResponseDto({ user });
+    return new UserCommonResponseDto().toResponse({ user });
   }
 
   @Post('/login/email')
@@ -41,7 +41,7 @@ export class UserController {
       email,
       password,
     );
-    return new UserCommonResponseDto({
+    return new UserCommonResponseDto().toResponse({
       user,
       accessToken,
     });
@@ -53,20 +53,20 @@ export class UserController {
     const { userId, gptKey } = dto;
     Auth.checkSameUserWithToken(request, userId);
     const user = await this.userService.changeGptKey(userId, gptKey);
-    return new UserCommonResponseDto({ user });
+    return new UserCommonResponseDto().toResponse({ user });
   }
 
   @Get('/email')
   async findEmailByPhone(@Query('phone') phone: string) {
     const email = await this.userService.findEmail(phone);
-    return new UserCommonResponseDto({ email });
+    return new UserCommonResponseDto().toResponse({ email });
   }
 
   @Patch('/password/reset')
   async resetPassword(@Body() dto: ResetPasswordDto) {
     const { email, phone } = dto;
     const password = await this.userService.resetPassword(email, phone);
-    return new UserCommonResponseDto({ password });
+    return new UserCommonResponseDto().toResponse({ password });
   }
   @Patch('/password')
   async changePassword(@Req() request, @Body() dto: ChangePasswordDto) {
@@ -77,6 +77,6 @@ export class UserController {
       oldPassword,
       newPassword,
     );
-    return new UserCommonResponseDto({ user });
+    return new UserCommonResponseDto().toResponse({ user });
   }
 }

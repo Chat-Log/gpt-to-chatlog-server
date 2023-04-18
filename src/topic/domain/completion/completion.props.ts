@@ -1,4 +1,5 @@
 import { ModelProvider } from '../../../model-provider/model-provider';
+import { Topic } from '../topic';
 
 export interface CompletionProps {
   id: string;
@@ -8,4 +9,5 @@ export interface CompletionProps {
   tokenCount: number;
   createdAt: Date;
   updatedAt: Date;
+  topic: Topic;
 }

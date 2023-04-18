@@ -2,14 +2,23 @@ import { Completion } from '../../domain/completion/completion';
 import { CompletionEntity } from '../../domain/completion/completion.entity';
 import { CompletionImpl } from './completion';
 import { chooseModel } from '../../../common/util/util';
+import { TopicMapper } from '../topic.mapper';
 
 export class CompletionMapper
   implements BaseMapper<Completion, CompletionEntity>
 {
   toEntity(completion: Completion): CompletionEntity {
     if (!completion) return;
-    const { id, answer, tokenCount, createdAt, updatedAt, model, question } =
-      completion.getPropsCopy();
+    const {
+      id,
+      answer,
+      tokenCount,
+      createdAt,
+      updatedAt,
+      model,
+      question,
+      topic,
+    } = completion.getPropsCopy();
     return {
       id,
       answer,
@@ -18,6 +27,7 @@ export class CompletionMapper
       updatedAt,
       modelName: model?.getName(),
       question,
+      topic: new TopicMapper().toEntity(topic),
     };
   }
 
