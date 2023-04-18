@@ -1,17 +1,15 @@
-export class UserCommonResponseDto {
-  constructor(responseBody: any, options?: any) {
+import { CommonResponseDto } from '../../../common/response/common-response.dto';
+
+export class UserCommonResponseDto extends CommonResponseDto {
+  override createResponseData(responseBody: any): any {
     const { user, ...data } = responseBody;
 
     const userProps = user?.getPropsCopy() || {};
     const { password, gptKey, ...userPropsWithoutAuth } = userProps;
-
     return {
-      data: {
-        ...userPropsWithoutAuth,
-        ...data,
-        gptKey: gptKey && UserCommonResponseDto.maskingGptKey(gptKey),
-      },
-      message: 'success',
+      ...userPropsWithoutAuth,
+      ...data,
+      gptKey: gptKey && UserCommonResponseDto.maskingGptKey(gptKey),
     };
   }
 
