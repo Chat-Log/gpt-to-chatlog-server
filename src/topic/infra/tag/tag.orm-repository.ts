@@ -16,4 +16,15 @@ export class TagOrmRepository extends BaseOrmRepository<Tag, TagEntity> {
   prepareQuery(): SelectQueryBuilder<TagEntity> {
     return this.repository.createQueryBuilder('tag');
   }
+
+  async findAllTagsByUserId(userId: string): Promise<string[]> {
+    const queryBuilder = this.prepareQuery();
+    queryBuilder
+      .select('tag.name', 'name')
+      .leftJoin('tag.topics', 'topic')
+      .andWhere(`topic.userId = :userId`, { userId });
+    queryBuilder.distinct(true);
+    const tags = await queryBuilder.getRawMany();
+    return tags.map((tag) => tag.name);
+  }
 }

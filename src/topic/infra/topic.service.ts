@@ -70,4 +70,8 @@ export class TopicService {
   async searchCompletionsWithTopic(options: SearchCompletionsWithTopicOptions) {
     return await this.completionRepository.searchCompletionsWithTopic(options);
   }
+
+  async retrieveAllTags(userId: string) {
+    return await this.tagRepository.findAllTagsByUserId(userId);
+  }
 }
