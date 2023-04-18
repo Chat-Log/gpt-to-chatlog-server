@@ -77,6 +77,8 @@ export class TopicController {
     };
     const [completions, pageTotalCount] =
       await this.topicService.searchCompletionsWithTopic(options);
-    return new TopicCommonResponseDto(completions, { pageTotalCount });
+    return new TopicCommonResponseDto().toResponse(completions, {
+      pageTotalCount,
+    });
   }
 }

@@ -1,9 +1,3 @@
-export class TopicCommonResponseDto {
-  constructor(responseBody: any, options?: any) {
-    return {
-      data: responseBody,
-      pageTotalCount: options?.pageTotalCount,
-      message: 'success',
-    };
-  }
-}
+import { CommonResponseDto } from '../../../common/response/common-response.dto';
+
+export class TopicCommonResponseDto extends CommonResponseDto {}
