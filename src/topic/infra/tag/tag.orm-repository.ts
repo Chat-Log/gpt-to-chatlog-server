@@ -1,7 +1,7 @@
-import { BaseOrmRepository } from '../../../../common/base.orm-repository';
-import { Tag } from '../../../domain/completion/tag/tag';
+import { BaseOrmRepository } from '../../../common/base.orm-repository';
+import { Tag } from '../../domain/tag/tag';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { TagEntity } from '../../../domain/completion/tag/tag.entity';
+import { TagEntity } from '../../domain/tag/tag.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagOrmEntity } from './tag.orm-entity';
 import { TagMapper } from './tag.mapper';

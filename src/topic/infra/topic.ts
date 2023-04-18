@@ -4,10 +4,10 @@ import { Topic } from '../domain/topic';
 import { CompletionImpl } from './completion/completion';
 import { User } from '../../user/domain/user';
 import { v4 as uuid } from 'uuid';
-import { Tag } from '../domain/completion/tag/tag';
+import { Tag } from '../domain/tag/tag';
 import { Readable } from 'stream';
 import { TopicProps } from '../domain/topic.props';
-import { TagImpl } from './completion/tag/tag';
+import { TagImpl } from './tag/tag';
 
 export class TopicImpl extends Topic {
   constructor(props: Partial<TopicProps>) {
@@ -46,6 +46,7 @@ export class TopicImpl extends Topic {
       answer += answerToken;
       tokenCount += 1;
     });
+
     resultStream.on('end', () => {
       this.reflectAnswerAndTokenCount(answer, tokenCount);
     });

@@ -3,7 +3,7 @@ import { TopicEntity } from '../domain/topic.entity';
 import { CompletionMapper } from './completion/completion.mapper';
 import { UserMapper } from '../../user/infra/user.mapper';
 import { TopicImpl } from './topic';
-import { TagMapper } from './completion/tag/tag.mapper';
+import { TagMapper } from './tag/tag.mapper';
 
 export class TopicMapper implements BaseMapper<Topic, TopicEntity> {
   toEntity(model: Topic): TopicEntity {
