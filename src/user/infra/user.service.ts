@@ -36,7 +36,7 @@ export class UserService {
   }
 
   public async changeGptKey(userId: string, gptKey: string) {
-    const user = await this.checkUserExistById(userId);
+    const user = await this.findUserByIdOrThrowError(userId);
     user.changeGptKey(gptKey);
     await this.userRepository.save(user);
     return user;
@@ -53,7 +53,7 @@ export class UserService {
     return await this.userRepository.findOne({ where: { email: email } });
   }
 
-  private async checkUserExistById(userId: string) {
+  public async findUserByIdOrThrowError(userId: string) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
       throw new UserNotFoundException(`not exist user with id : ${userId}`);
@@ -87,7 +87,7 @@ export class UserService {
     oldPassword: string,
     newPassword: string,
   ) {
-    const user = await this.checkUserExistById(userId);
+    const user = await this.findUserByIdOrThrowError(userId);
     await user.changePassword(oldPassword, newPassword);
     await this.userRepository.save(user);
     return user;

@@ -2,14 +2,21 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
 } from 'typeorm';
 import { TopicEntity } from '../domain/topic.entity';
 import { CompletionEntity } from '../domain/completion/completion.entity';
+import { UserOrmEntity } from '../../user/infra/user.orm-entity';
+import { CompletionOrmEntity } from './completion/completion.orm-entity';
+import { UserEntity } from '../../user/domain/user.entity';
+import { TagOrmEntity } from './completion/tag/tag.orm-entity';
+import { TagEntity } from '../domain/completion/tag/tag.entity';
 
-@Entity()
+@Entity('topics')
 export class TopicOrmEntity implements TopicEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: string;
 
   @Column()
@@ -21,7 +28,16 @@ export class TopicOrmEntity implements TopicEntity {
   @CreateDateColumn()
   updatedAt: Date;
 
+  @OneToMany(() => CompletionOrmEntity, (completion) => completion.topic, {
+    cascade: ['update', 'insert'],
+  })
   completions: CompletionEntity[];
 
+  @ManyToOne(() => UserOrmEntity, (user) => user.topics, { nullable: false })
   user: UserEntity;
+
+  @OneToMany(() => TagOrmEntity, (tag) => tag.topics, {
+    cascade: ['update', 'insert', 'remove'],
+  })
+  tags: TagEntity[];
 }

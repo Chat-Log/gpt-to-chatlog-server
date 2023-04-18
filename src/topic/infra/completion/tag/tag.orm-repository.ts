@@ -1,7 +1,6 @@
 import { BaseOrmRepository } from '../../../../common/base.orm-repository';
 import { Tag } from '../../../domain/completion/tag/tag';
-import { IFindOneOptions } from '../../../../common/interface/interface';
-import { DeepPartial, Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { TagEntity } from '../../../domain/completion/tag/tag.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagOrmEntity } from './tag.orm-entity';
@@ -13,9 +12,8 @@ export class TagOrmRepository extends BaseOrmRepository<Tag, TagEntity> {
   ) {
     super(repository, new TagMapper());
   }
-  protected getFindOneQuery(
-    options: IFindOneOptions<DeepPartial<TagEntity>>,
-  ): SelectQueryBuilder<TagEntity> {
-    return undefined;
+
+  prepareQuery(): SelectQueryBuilder<TagEntity> {
+    return this.repository.createQueryBuilder('tag');
   }
 }

@@ -1,11 +1,23 @@
 import { User } from '../domain/user';
 import { UserImpl } from './user';
+import { UserEntity } from '../domain/user.entity';
+import { TopicMapper } from '../../topic/infra/topic.mapper';
 
 export class UserMapper implements BaseMapper<User, UserEntity> {
   toEntity(model: User): UserEntity {
-    if (!model) return null;
-    const { id, email, password, gptKey, phone, name, createdAt, updatedAt } =
-      model.getPropsCopy();
+    if (!model) return;
+    const {
+      id,
+      email,
+      password,
+      gptKey,
+      phone,
+      name,
+      createdAt,
+      updatedAt,
+      topics,
+      tags,
+    } = model.getPropsCopy();
     return {
       gptKey,
       createdAt,
@@ -15,11 +27,12 @@ export class UserMapper implements BaseMapper<User, UserEntity> {
       id,
       email,
       password,
+      topics: topics?.map((topic) => new TopicMapper().toEntity(topic)),
     };
   }
 
   toModel(entity: UserEntity): User {
-    if (!entity) return null;
+    if (!entity) return;
     const user = new UserImpl({
       id: entity.id,
       email: entity.email,

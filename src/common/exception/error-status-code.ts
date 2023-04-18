@@ -12,10 +12,12 @@ export enum ErrorStatusCode {
   DATA_REMOVE_FAILED = '4505',
   DATA_NOT_FOUND = '4401',
   USER_NOT_FOUND = '4402',
+  TRANSACTION_FAILED = '4504',
 
   //bad-request
   INVALID_INPUT = '4001',
 
   //internal
   UNKNOWN_EXCEPTION = '4501',
+  NULL_OR_UNDEFINED_PARAMETER = '4506',
 }

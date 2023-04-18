@@ -8,6 +8,9 @@ import { TopicMapper } from './topic.mapper';
 import { BaseOrmRepository } from '../../common/base.orm-repository';
 import { IFindOneOptions } from '../../common/interface/interface';
 
+interface TopicFindOptions {
+  completionIdsIn?: string[];
+}
 @Injectable()
 export class TopicOrmRepository extends BaseOrmRepository<Topic, TopicEntity> {
   constructor(
@@ -17,9 +20,22 @@ export class TopicOrmRepository extends BaseOrmRepository<Topic, TopicEntity> {
     super(repository, new TopicMapper());
   }
 
-  protected getFindOneQuery(
-    options: IFindOneOptions<DeepPartial<TopicEntity>>,
-  ): SelectQueryBuilder<TopicEntity> {
-    return undefined;
+  public async findOneWithCompletionsAndTags(
+    options: IFindOneOptions<DeepPartial<TopicEntity>> & TopicFindOptions,
+  ): Promise<Topic> {
+    const query = this.prepareFindOneQuery(options);
+    query.leftJoinAndSelect('topic.completions', 'completions');
+    query.leftJoinAndSelect('topic.tags', 'tags');
+    if (options?.completionIdsIn) {
+      query.where('completions.id IN (:...completionIdsIn)', {
+        completionIdsIn: options.completionIdsIn,
+      });
+    }
+
+    return new TopicMapper().toModel(await query.getOne());
+  }
+
+  prepareQuery(): SelectQueryBuilder<TopicEntity> {
+    return this.repository.createQueryBuilder('topic');
   }
 }

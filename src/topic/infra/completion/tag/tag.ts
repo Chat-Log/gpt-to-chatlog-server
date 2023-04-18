@@ -1,18 +1,17 @@
-import { TagProps } from '../../../interface/interface';
-import { uuidV4 as uuid } from 'uuid';
-export class Tag implements Tag {
-  private readonly id;
-  private readonly name: string;
-  constructor(id: string, name: string) {
-    this.name = name;
+import { v4 as uuid } from 'uuid';
+import { Tag } from '../../../domain/completion/tag/tag';
+import { TagProps } from '../../../domain/completion/tag/tag.props';
+
+export class TagImpl extends Tag {
+  constructor(props: Partial<TagProps>) {
+    super(props);
   }
-  static createTag(name: string) {
-    return new Tag(uuid(), name);
+  static create(name: string) {
+    return new TagImpl({ id: uuid(), name });
   }
-  public getProps(): TagProps {
-    return {
-      id: this.id,
-      name: this.name,
-    };
+  delete(): void {
+    this.props.isDeleted = true;
   }
+
+  updateTagTitle(name: string): void {}
 }

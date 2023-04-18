@@ -1,4 +1,6 @@
-interface UserEntity {
+import { TopicEntity } from '../../topic/domain/topic.entity';
+
+export interface UserEntity {
   id: string;
   name: string;
   email: string;
@@ -7,4 +9,5 @@ interface UserEntity {
   phone: string;
   createdAt: Date;
   updatedAt: Date;
+  topics: TopicEntity[];
 }

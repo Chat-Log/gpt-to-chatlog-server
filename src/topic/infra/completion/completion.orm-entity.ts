@@ -2,19 +2,19 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CompletionEntity } from '../../domain/completion/completion.entity';
-import { Model } from '../../../common/enum/enum';
+import { ModelName } from '../../../common/enum/enum';
+import { TopicOrmEntity } from '../topic.orm-entity';
+import { TopicEntity } from '../../domain/topic.entity';
 
-@Entity()
+@Entity('completions')
 export class CompletionOrmEntity implements CompletionEntity {
   @PrimaryGeneratedColumn()
   id: string;
-
-  @Column()
-  userId: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -26,11 +26,16 @@ export class CompletionOrmEntity implements CompletionEntity {
   answer: string;
 
   @Column()
-  model: Model;
+  modelName: ModelName;
 
   @Column()
   question: string;
 
   @Column()
   tokenCount: number;
+
+  @ManyToOne(() => TopicOrmEntity, (topic) => topic.completions, {
+    cascade: ['update', 'insert'],
+  })
+  topic: TopicEntity;
 }
