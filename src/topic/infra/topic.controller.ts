@@ -81,4 +81,10 @@ export class TopicController {
       pageTotalCount,
     });
   }
+
+  @Get('/topics/tags')
+  async retrieveAllTags(@GetUserIdFromAccessToken() userId: string) {
+    const tagNames = await this.topicService.retrieveAllTags(userId);
+    return new TopicCommonResponseDto().toResponse(tagNames);
+  }
 }
