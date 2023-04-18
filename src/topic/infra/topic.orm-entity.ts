@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { TopicEntity } from '../domain/topic.entity';
 import { CompletionEntity } from '../domain/completion/completion.entity';
@@ -25,7 +26,7 @@ export class TopicOrmEntity implements TopicEntity {
   @CreateDateColumn()
   createdAt: Date;
 
-  @CreateDateColumn()
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @OneToMany(() => CompletionOrmEntity, (completion) => completion.topic, {
