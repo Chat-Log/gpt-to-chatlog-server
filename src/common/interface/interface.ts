@@ -67,3 +67,8 @@ export interface SearchCompletionsWithTopicResult {
   createdAt: Date;
   modelName: ModelName;
 }
+
+export interface RetrieveDailyCompletionCountsResult {
+  daily: { date: string; count: number }[];
+  yearly: { year: string; count: number }[];
+}

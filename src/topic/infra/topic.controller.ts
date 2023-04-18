@@ -87,4 +87,15 @@ export class TopicController {
     const tagNames = await this.topicService.retrieveAllTags(userId);
     return new TopicCommonResponseDto().toResponse(tagNames);
   }
+
+  @Get('/completions/counts/:year')
+  async retrieveDailyCompletionCounts(
+    @Param('year') year: string,
+    @GetUserIdFromAccessToken() userId: string,
+  ) {
+    if (!year) year = new Date().getFullYear().toString();
+    const completionCounts =
+      await this.topicService.retrieveDailyCompletionCounts(userId, year);
+    return new TopicCommonResponseDto().toResponse(completionCounts);
+  }
 }

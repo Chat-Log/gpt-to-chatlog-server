@@ -7,6 +7,7 @@ import { CompletionEntity } from '../../domain/completion/completion.entity';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import {
+  RetrieveDailyCompletionCountsResult,
   SearchCompletionsWithTopicOptions,
   SearchCompletionsWithTopicResult,
 } from '../../../common/interface/interface';
@@ -121,6 +122,43 @@ export class CompletionOrmRepository extends BaseOrmRepository<
       tagNames: completion.topic?.tags?.map((tag) => tag.name),
       createdAt: completion.createdAt,
       modelName: completion.modelName,
+    };
+  }
+
+  async retrieveDailyCompletionCounts(
+    userId: string,
+    year: string | null,
+  ): Promise<RetrieveDailyCompletionCountsResult> {
+    const queryBuilder = this.prepareQuery();
+    queryBuilder.leftJoinAndSelect('completion.topic', 'topic');
+    queryBuilder.andWhere('topic.userId = :userId', { userId });
+
+    if (!year) {
+      year = new Date().getFullYear().toString();
+    }
+
+    const dailyCompletionCounts = await queryBuilder
+      .clone()
+      .select(
+        "strftime('%Y-%m-%d', completion.createdAt) as date, COUNT(completion.id) as count",
+      )
+      .andWhere("strftime('%Y', completion.createdAt) = :year", {
+        year: String(year),
+      })
+      .groupBy('date')
+      .getRawMany();
+
+    const yearlyCompletionCounts = await queryBuilder
+      .clone()
+      .select(
+        "strftime('%Y', completion.createdAt) as year, COUNT(completion.id) as count",
+      )
+      .groupBy('year')
+      .getRawMany();
+
+    return {
+      daily: dailyCompletionCounts,
+      yearly: yearlyCompletionCounts,
     };
   }
 }

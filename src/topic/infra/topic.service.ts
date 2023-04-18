@@ -74,4 +74,11 @@ export class TopicService {
   async retrieveAllTags(userId: string) {
     return await this.tagRepository.findAllTagsByUserId(userId);
   }
+
+  async retrieveDailyCompletionCounts(userId: string, year: string) {
+    return await this.completionRepository.retrieveDailyCompletionCounts(
+      userId,
+      year,
+    );
+  }
 }
