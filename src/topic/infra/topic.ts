@@ -13,7 +13,7 @@ export class TopicImpl extends Topic {
   constructor(props: Partial<TopicProps>) {
     super(props);
   }
-  updateTopicTitle(title: string): void {
+  changeTopicTitle(title: string): void {
     this.props.title = title;
   }
 
@@ -32,7 +32,7 @@ export class TopicImpl extends Topic {
   }
   askToModel(modelProvider: ModelProvider, question: string): Readable {
     this.createQuestion(modelProvider, question);
-    this.updateTopicTitle(question.slice(0, 20));
+    this.changeTopicTitle(question.slice(0, 20));
     let answer = '';
 
     let tokenCount = modelProvider.countToken(this.props.completions);
