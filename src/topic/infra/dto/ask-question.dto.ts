@@ -17,7 +17,7 @@ export class AskQuestionDto {
 
   @ApiProperty({
     description: 'Name of the question and answer model',
-    example: 'ModelName1',
+    enum: ModelName,
   })
   @IsEnum(ModelName)
   @IsNotEmpty()
