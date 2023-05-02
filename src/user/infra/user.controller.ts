@@ -17,7 +17,11 @@ import { UserGuard } from '../../common/guard/user.guard';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Auth } from '../../common/auth/auth';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FindEmailByPhoneDto } from './dto/find-email-by-phone.dto';
 
+@ApiTags('User')
+@ApiBearerAuth()
 @Controller('/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -57,7 +61,8 @@ export class UserController {
   }
 
   @Get('/email')
-  async findEmailByPhone(@Query('phone') phone: string) {
+  async findEmailByPhone(@Query() dto: FindEmailByPhoneDto) {
+    const { phone } = dto;
     const email = await this.userService.findEmail(phone);
     return new UserCommonResponseDto().toResponse({ email });
   }
