@@ -35,11 +35,10 @@ export class TopicService {
         completionIdsIn: prevCompletionIds,
         where: { id: topicId, user: { id: userId } },
       });
-      topic.syncTagsWithNewTagNames(tagNames, true);
-
       if (!topic) {
         throw new DataNotFoundException('topic not found with id : ' + topicId);
       }
+      topic.syncTagsWithNewTagNames(tagNames, true);
     }
     const answerStream = topic.askToModel(chooseModel(modelName), question);
 
