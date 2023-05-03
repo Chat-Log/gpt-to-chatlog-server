@@ -43,6 +43,14 @@ export class AskQuestionDto {
   topicId: string;
 
   @ApiProperty({
+    description: 'topic title, optional',
+    example: 'topictitle',
+  })
+  @IsOptional()
+  @IsString()
+  topicTitle: string;
+
+  @ApiProperty({
     description: 'Array of IDs of previous question-answer pairs (optional)',
     example: ['111', '222'],
   })
