@@ -24,12 +24,23 @@ export class TopicService {
   ) {}
 
   async askQuestion(dto: AskQuestionDto, userId: string): Promise<Readable> {
-    const { modelName, question, tagNames, topicId, prevCompletionIds } = dto;
+    const {
+      modelName,
+      question,
+      tagNames,
+      topicId,
+      prevCompletionIds,
+      topicTitle,
+    } = dto;
     const user = await this.userService.findUserByIdOrThrowError(userId);
     let topic: Topic;
-
+    let changeTopicTitleRequired = false;
     if (!topicId) {
       topic = TopicImpl.createTopic(tagNames, user);
+      if (topicTitle) {
+        topic.changeTopicTitle(topicTitle);
+      }
+      changeTopicTitleRequired = true;
     } else {
       topic = await this.topicRepository.findOneWithCompletionsAndTags({
         completionIdsIn: prevCompletionIds,
@@ -40,7 +51,9 @@ export class TopicService {
       }
       topic.syncTagsWithNewTagNames(tagNames, true);
     }
-    const answerStream = topic.askToModel(chooseModel(modelName), question);
+    const answerStream = topic.askToModel(chooseModel(modelName), question, {
+      changeTopicTitleRequired,
+    });
 
     answerStream.on('data', (data) => {});
     answerStream.on('end', async () => {

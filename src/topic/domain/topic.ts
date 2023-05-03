@@ -6,7 +6,11 @@ import { Tag } from './tag/tag';
 
 export abstract class Topic extends BaseDomainModel<TopicProps> {
   abstract changeTopicTitle(name: string): void;
-  abstract askToModel(modelProvider: ModelProvider, question: string): Readable;
+  abstract askToModel(
+    modelProvider: ModelProvider,
+    question: string,
+    options?: any,
+  ): Readable;
   abstract addTags(tag: Tag[]): void;
   abstract syncTagsWithNewTagNames(
     tagNames: string[],

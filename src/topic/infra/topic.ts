@@ -9,6 +9,9 @@ import { Readable } from 'stream';
 import { TopicProps } from '../domain/topic.props';
 import { TagImpl } from './tag/tag';
 
+interface AskOptions {
+  changeTopicTitleRequired: boolean;
+}
 export class TopicImpl extends Topic {
   constructor(props: Partial<TopicProps>) {
     super(props);
@@ -30,9 +33,17 @@ export class TopicImpl extends Topic {
   private getPreviousCompletions(): Completion[] {
     return this.props.completions.slice(0, this.props.completions.length - 1);
   }
-  askToModel(modelProvider: ModelProvider, question: string): Readable {
+  askToModel(
+    modelProvider: ModelProvider,
+    question: string,
+    options?: AskOptions,
+  ): Readable {
     this.createQuestion(modelProvider, question);
-    this.changeTopicTitle(question.slice(0, 20));
+    if (options?.changeTopicTitleRequired) {
+      if (!this.props.title) {
+        this.changeTopicTitle(question.slice(0, 20));
+      }
+    }
     let answer = '';
 
     let tokenCount = modelProvider.countToken(this.props.completions);
