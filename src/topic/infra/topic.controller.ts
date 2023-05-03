@@ -33,10 +33,15 @@ export class TopicController {
     @GetUserIdFromAccessToken() userId: string,
     @Res() res: Response,
   ): Promise<void> {
-    const answerStream = await this.topicService.askQuestion(dto, userId);
+    const { answerStream, topic } = await this.topicService.askQuestion(
+      dto,
+      userId,
+    );
+    res.write(
+      'topicId:' + topic.getPropsCopy().id.toString() + '\nendFlag' + '\n',
+    );
     answerStream
       .on('data', (data) => {
-        console.log(data);
         const decodedData = data.toString('utf-8');
         res.write(decodedData);
       })
