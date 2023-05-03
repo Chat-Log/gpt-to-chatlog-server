@@ -45,7 +45,7 @@ export class TopicService {
       }
       changeTopicTitleRequired = true;
     } else {
-      topic = await this.topicRepository.findOneWithCompletionsAndTags({
+      topic = await this.topicRepository.findOneWithCompletionInIds({
         completionIdsIn: prevCompletionIds,
         where: { id: topicId, user: { id: userId } },
       });
