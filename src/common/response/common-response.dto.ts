@@ -1,7 +1,8 @@
+import { flattenObjectWithoutProps } from '../util/util';
+
 export class CommonResponseDto {
-  //when it is different, should override this method
   createResponseData(data: any): any {
-    return data;
+    return flattenObjectWithoutProps(data);
   }
   public toResponse(responseBody: any, options?: any) {
     return {

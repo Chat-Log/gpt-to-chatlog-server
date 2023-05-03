@@ -16,10 +16,16 @@ import { ChangeTopicTitleDto } from './dto/change-topic-title.dto';
 import { SearchCompletionsDto } from './dto/search-completions.dto';
 import { SearchCompletionsWithTopicOptions } from '../../common/interface/interface';
 import { TopicCommonResponseDto } from './dto/topic.common-response.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserGuard } from '../../common/guard/user.guard';
 import { RetrieveDailyCompletionCountsDto } from './dto/retrieve-daily-completion-counts.dto';
 import { Response } from 'express';
+import { flattenObjectWithoutProps } from '../../common/util/util';
 
 @Controller()
 @ApiTags('Topic')
@@ -28,6 +34,7 @@ export class TopicController {
   constructor(private readonly topicService: TopicService) {}
 
   @Post('topics/completion')
+  @ApiOperation({ summary: 'ask question to model' })
   async askQuestion(
     @Body() dto: AskQuestionDto,
     @GetUserIdFromAccessToken() userId: string,
@@ -52,6 +59,17 @@ export class TopicController {
         console.error('Stream error:', err);
         res.status(500).send(err.message);
       });
+  }
+  @Get('/topics/:topicId')
+  @ApiOperation({ summary: 'Get topic' })
+  @ApiParam({ name: 'topicId', type: String, required: true })
+  async retrieveTopic(
+    @Param('topicId') topicId: string,
+    @GetUserIdFromAccessToken() userId: string,
+  ) {
+    const topic = await this.topicService.retrieveTopic(topicId, userId);
+    const result = flattenObjectWithoutProps(topic);
+    return new TopicCommonResponseDto().toResponse(result);
   }
 
   @UseGuards(UserGuard)
