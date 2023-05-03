@@ -10,11 +10,6 @@ import { ModelName } from '../../../common/enum/enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AskQuestionDto {
-  @ApiProperty({ description: 'User ID', example: '123456789' })
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
-
   @ApiProperty({
     description: 'Name of the question and answer model',
     enum: ModelName,

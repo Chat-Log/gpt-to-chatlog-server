@@ -17,12 +17,4 @@ export class ChangePasswordDto {
   @IsString()
   @IsNotEmpty()
   newPassword: string;
-
-  @ApiProperty({
-    example: 'user_id',
-    description: 'The user ID of the user changing the password',
-  })
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
 }
