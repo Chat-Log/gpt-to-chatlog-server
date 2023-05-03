@@ -9,12 +9,4 @@ export class ChangeGptKeyDto {
   @IsString()
   @IsNotEmpty()
   gptKey: string;
-
-  @ApiProperty({
-    example: 'user-id',
-    description: 'The ID of the user whose GPT API key will be updated',
-  })
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
 }

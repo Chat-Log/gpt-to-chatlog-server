@@ -24,14 +24,13 @@ export class TopicOrmRepository extends BaseOrmRepository<Topic, TopicEntity> {
     options: IFindOneOptions<DeepPartial<TopicEntity>> & TopicFindOptions,
   ): Promise<Topic> {
     const query = this.prepareFindOneQuery(options);
-    query.leftJoinAndSelect('topic.completions', 'completions');
     query.leftJoinAndSelect('topic.tags', 'tags');
-    if (options?.completionIdsIn) {
-      query.where('completions.id IN (:...completionIdsIn)', {
+    if (options?.completionIdsIn && options?.completionIdsIn.length > 0) {
+      query.leftJoinAndSelect('topic.completions', 'completions');
+      query.andWhere('completions.id IN (:...completionIdsIn)', {
         completionIdsIn: options.completionIdsIn,
       });
     }
-
     return new TopicMapper().toModel(await query.getOne());
   }
 

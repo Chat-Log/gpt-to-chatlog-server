@@ -16,9 +16,9 @@ import { ChangeGptKeyDto } from './dto/change-gpt-key.dto';
 import { UserGuard } from '../../common/guard/user.guard';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { Auth } from '../../common/auth/auth';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FindEmailByPhoneDto } from './dto/find-email-by-phone.dto';
+import { GetUserIdFromAccessToken } from '../../common/decorator/get-userid-from-accesstoken.decorator';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -53,9 +53,12 @@ export class UserController {
 
   @UseGuards(UserGuard)
   @Patch('/gpt-key')
-  async changeApiKey(@Req() request, @Body() dto: ChangeGptKeyDto) {
-    const { userId, gptKey } = dto;
-    Auth.checkSameUserWithToken(request, userId);
+  async changeApiKey(
+    @Req() request,
+    @Body() dto: ChangeGptKeyDto,
+    @GetUserIdFromAccessToken() userId: string,
+  ) {
+    const { gptKey } = dto;
     const user = await this.userService.changeGptKey(userId, gptKey);
     return new UserCommonResponseDto().toResponse({ user });
   }
@@ -74,9 +77,12 @@ export class UserController {
     return new UserCommonResponseDto().toResponse({ password });
   }
   @Patch('/password')
-  async changePassword(@Req() request, @Body() dto: ChangePasswordDto) {
-    const { userId, oldPassword, newPassword } = dto;
-    Auth.checkSameUserWithToken(request, userId);
+  async changePassword(
+    @Req() request,
+    @Body() dto: ChangePasswordDto,
+    @GetUserIdFromAccessToken() userId: string,
+  ) {
+    const { oldPassword, newPassword } = dto;
     const user = await this.userService.changePassword(
       userId,
       oldPassword,

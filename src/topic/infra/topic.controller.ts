@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
@@ -18,6 +19,7 @@ import { TopicCommonResponseDto } from './dto/topic.common-response.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserGuard } from '../../common/guard/user.guard';
 import { RetrieveDailyCompletionCountsDto } from './dto/retrieve-daily-completion-counts.dto';
+import { Response } from 'express';
 
 @Controller()
 @ApiTags('Topic')
@@ -25,13 +27,26 @@ import { RetrieveDailyCompletionCountsDto } from './dto/retrieve-daily-completio
 export class TopicController {
   constructor(private readonly topicService: TopicService) {}
 
-  @Post('/topics/completion')
+  @Post('topics/completion')
   async askQuestion(
     @Body() dto: AskQuestionDto,
     @GetUserIdFromAccessToken() userId: string,
-  ): Promise<string> {
-    await this.topicService.askQuestion(dto, userId);
-    return null;
+    @Res() res: Response,
+  ): Promise<void> {
+    const answerStream = await this.topicService.askQuestion(dto, userId);
+    answerStream
+      .on('data', (data) => {
+        console.log(data);
+        const decodedData = data.toString('utf-8');
+        res.write(decodedData);
+      })
+      .on('end', () => {
+        res.end();
+      })
+      .on('error', (err) => {
+        console.error('Stream error:', err);
+        res.status(500).send(err.message);
+      });
   }
 
   @UseGuards(UserGuard)
