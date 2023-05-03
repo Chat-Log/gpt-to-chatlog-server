@@ -35,7 +35,7 @@ export class TopicOrmRepository extends BaseOrmRepository<Topic, TopicEntity> {
   ) {
     const query = this.prepareFindOneQuery(options);
     query.leftJoinAndSelect('topic.tags', 'tags');
-
+    query.leftJoinAndSelect('topic.user', 'user');
     if (options?.completionIdsIn && options?.completionIdsIn.length > 0) {
       query.leftJoinAndSelect('topic.completions', 'completions');
       query.andWhere('completions.id IN (:...completionIdsIn)', {
