@@ -1,6 +1,5 @@
 ﻿import { Injectable } from '@nestjs/common';
 import { TopicImpl } from './topic';
-import { Readable } from 'stream';
 import { AskQuestionDto } from './dto/ask-question.dto';
 import { TopicOrmRepository } from './topic.orm-repository';
 import { TagOrmRepository } from './tag/tag.orm-repository';
@@ -12,6 +11,7 @@ import { DataNotFoundException } from '../../common/exception/data-access.except
 import { DataSource } from 'typeorm';
 import { SaveTopicSyncTagsTransaction } from './transaction/save-topic-sync-tags.transaction';
 import { SearchCompletionsWithTopicOptions } from '../../common/interface/interface';
+import { Readable } from 'stream';
 
 @Injectable()
 export class TopicService {
@@ -23,7 +23,10 @@ export class TopicService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async askQuestion(dto: AskQuestionDto, userId: string): Promise<Readable> {
+  async askQuestion(
+    dto: AskQuestionDto,
+    userId: string,
+  ): Promise<{ answerStream: Readable; topic: Topic }> {
     const {
       modelName,
       question,
@@ -62,7 +65,7 @@ export class TopicService {
       });
     });
 
-    return answerStream;
+    return { answerStream, topic };
   }
   async changeTopicTitle(topicId: string, topicName: string): Promise<Topic> {
     const topic = await this.topicRepository.findOneWithCompletionsAndTags({
