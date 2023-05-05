@@ -26,7 +26,6 @@ import { UserGuard } from '../../common/guard/user.guard';
 import { RetrieveDailyCompletionCountsDto } from './dto/retrieve-daily-completion-counts.dto';
 import { Response } from 'express';
 import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
-import { flattenObjectWithoutProps } from '../../common/util/util';
 
 @Controller()
 @ApiTags('Topic')
@@ -135,11 +134,6 @@ export class TopicController {
     @Query() dto: RetrieveRecentTopicsTitleDto,
     @GetUserIdFromAccessToken() userId: string,
   ) {
-    const objArray = [
-      { name: 'Alice', age: 30 },
-      { name: 'Bob', age: 40 },
-    ];
-    console.log(flattenObjectWithoutProps(objArray));
     const topics = await this.topicService.retrieveRecentTopicsTitle(
       dto,
       userId,
