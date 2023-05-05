@@ -77,6 +77,15 @@ export class TopicService {
     await this.topicRepository.save(topic);
     return topic;
   }
+  async retrieveTopic(topicId, userId) {
+    const topic = await this.topicRepository.findOneWithCompletionsAndTags({
+      where: { id: topicId, user: { id: userId } },
+    });
+
+    if (!topic)
+      throw new DataNotFoundException('topic not found with id : ' + topicId);
+    return topic;
+  }
 
   getHello(): string {
     return 'Hello World!';
