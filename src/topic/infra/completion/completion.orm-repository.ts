@@ -32,6 +32,7 @@ export class CompletionOrmRepository extends BaseOrmRepository<
   async searchCompletionsWithTopic(
     options: SearchCompletionsWithTopicOptions,
   ): Promise<[SearchCompletionsWithTopicResult[], number]> {
+    console.log(options);
     const {
       tagNames,
       modelNames,
@@ -91,7 +92,6 @@ export class CompletionOrmRepository extends BaseOrmRepository<
       );
     }
     if (onlyLastCompletions) {
-      console.log('hi');
       const subQuery = this.prepareQuery()
         .select('MAX(completion.createdAt)', 'maxCreatedAt')
         // .from(CompletionOrmEntity, 'completion')
@@ -100,7 +100,8 @@ export class CompletionOrmRepository extends BaseOrmRepository<
       queryBuilder.andWhere(`completion.createdAt IN (${subQuery.getQuery()})`);
       Object.assign(queryBuilder.getParameters(), subQuery.getParameters());
     }
-    queryBuilder.skip((pageIndex - 1) * pageSize);
+    queryBuilder.orderBy('completion.createdAt', 'DESC');
+    queryBuilder.skip(pageSize * (pageIndex - 1)).take(pageSize);
 
     const [completions, count] = await queryBuilder.getManyAndCount();
 
