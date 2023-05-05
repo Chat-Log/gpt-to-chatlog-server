@@ -34,8 +34,6 @@ export class CompletionOrmEntity implements CompletionEntity {
   @Column()
   tokenCount: number;
 
-  @ManyToOne(() => TopicOrmEntity, (topic) => topic.completions, {
-    cascade: ['update', 'insert'],
-  })
+  @ManyToOne(() => TopicOrmEntity, (topic) => topic.completions, {})
   topic: TopicEntity;
 }

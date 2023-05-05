@@ -29,9 +29,7 @@ export class TopicOrmEntity implements TopicEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => CompletionOrmEntity, (completion) => completion.topic, {
-    cascade: ['update', 'insert'],
-  })
+  @OneToMany(() => CompletionOrmEntity, (completion) => completion.topic, {})
   completions: CompletionEntity[];
 
   @ManyToOne(() => UserOrmEntity, (user) => user.topics, { nullable: false })
