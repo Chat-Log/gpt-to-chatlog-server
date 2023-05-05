@@ -12,6 +12,7 @@ import { DataSource } from 'typeorm';
 import { SaveTopicSyncTagsTransaction } from './transaction/save-topic-sync-tags.transaction';
 import { SearchCompletionsWithTopicOptions } from '../../common/interface/interface';
 import { Readable } from 'stream';
+import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
 
 @Injectable()
 export class TopicService {
@@ -103,6 +104,18 @@ export class TopicService {
     return await this.completionRepository.retrieveDailyCompletionCounts(
       userId,
       year,
+    );
+  }
+
+  async retrieveRecentTopicsTitle(
+    dto: RetrieveRecentTopicsTitleDto,
+    userId: string,
+  ) {
+    const { pageSize = 10, pageIndex = 1 } = dto;
+    return await this.topicRepository.retrieveRecentTopicsTitle(
+      userId,
+      pageIndex,
+      pageSize,
     );
   }
 }

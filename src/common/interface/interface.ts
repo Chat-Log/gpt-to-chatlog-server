@@ -72,3 +72,8 @@ export interface RetrieveDailyCompletionCountsResult {
   daily: { date: string; count: number }[];
   yearly: { year: string; count: number }[];
 }
+
+export interface RetrieveRecentTopicsTitleResult {
+  id: string;
+  title: string;
+}
