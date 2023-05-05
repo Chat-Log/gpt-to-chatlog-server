@@ -6,7 +6,10 @@ import { TopicOrmEntity } from './topic.orm-entity';
 import { TopicEntity } from '../domain/topic.entity';
 import { TopicMapper } from './topic.mapper';
 import { BaseOrmRepository } from '../../common/base.orm-repository';
-import { IFindOneOptions } from '../../common/interface/interface';
+import {
+  IFindOneOptions,
+  RetrieveRecentTopicsTitleResult,
+} from '../../common/interface/interface';
 
 interface TopicFindOptions {
   completionIdsIn?: string[];
@@ -47,5 +50,34 @@ export class TopicOrmRepository extends BaseOrmRepository<Topic, TopicEntity> {
 
   prepareQuery(): SelectQueryBuilder<TopicEntity> {
     return this.repository.createQueryBuilder('topic');
+  }
+
+  async retrieveRecentTopicsTitle(
+    userId: string,
+    pageIndex: number,
+    pageSize: number,
+  ): Promise<RetrieveRecentTopicsTitleResult[]> {
+    const query = this.prepareFindManyQuery({
+      pageSize,
+      pageIdx: pageIndex,
+      where: { user: { id: userId } },
+      orderBy: {
+        order: 'DESC',
+        sort: 'topic.createdAt',
+      },
+    });
+    query.select(['topic.title', 'topic.id']);
+    const result = await query.getMany();
+    return result.map((topic) =>
+      this.mapToRetrieveRecentTopicsTitleResult(topic),
+    );
+  }
+  private mapToRetrieveRecentTopicsTitleResult(
+    topic: TopicEntity,
+  ): RetrieveRecentTopicsTitleResult {
+    return {
+      id: topic.id,
+      title: topic.title,
+    };
   }
 }

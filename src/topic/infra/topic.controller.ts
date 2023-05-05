@@ -25,6 +25,7 @@ import {
 import { UserGuard } from '../../common/guard/user.guard';
 import { RetrieveDailyCompletionCountsDto } from './dto/retrieve-daily-completion-counts.dto';
 import { Response } from 'express';
+import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
 import { flattenObjectWithoutProps } from '../../common/util/util';
 
 @Controller()
@@ -59,17 +60,6 @@ export class TopicController {
         console.error('Stream error:', err);
         res.status(500).send(err.message);
       });
-  }
-  @Get('/topics/:topicId')
-  @ApiOperation({ summary: 'Get topic' })
-  @ApiParam({ name: 'topicId', type: String, required: true })
-  async retrieveTopic(
-    @Param('topicId') topicId: string,
-    @GetUserIdFromAccessToken() userId: string,
-  ) {
-    const topic = await this.topicService.retrieveTopic(topicId, userId);
-    const result = flattenObjectWithoutProps(topic);
-    return new TopicCommonResponseDto().toResponse(result);
   }
 
   @UseGuards(UserGuard)
@@ -136,5 +126,34 @@ export class TopicController {
     const completionCounts =
       await this.topicService.retrieveDailyCompletionCounts(userId, year);
     return new TopicCommonResponseDto().toResponse(completionCounts);
+  }
+
+  @Get('/topics/recent')
+  @UseGuards(UserGuard)
+  @ApiOperation({ summary: 'Retrieve recent topics' })
+  async retrieveRecentTopics(
+    @Query() dto: RetrieveRecentTopicsTitleDto,
+    @GetUserIdFromAccessToken() userId: string,
+  ) {
+    const objArray = [
+      { name: 'Alice', age: 30 },
+      { name: 'Bob', age: 40 },
+    ];
+    console.log(flattenObjectWithoutProps(objArray));
+    const topics = await this.topicService.retrieveRecentTopicsTitle(
+      dto,
+      userId,
+    );
+    return new TopicCommonResponseDto().toResponse(topics);
+  }
+  @Get('/topics/:topicId')
+  @ApiOperation({ summary: 'Get topic' })
+  @ApiParam({ name: 'topicId', type: String, required: true })
+  async retrieveTopic(
+    @Param('topicId') topicId: string,
+    @GetUserIdFromAccessToken() userId: string,
+  ) {
+    const topic = await this.topicService.retrieveTopic(topicId, userId);
+    return new TopicCommonResponseDto().toResponse(topic);
   }
 }
