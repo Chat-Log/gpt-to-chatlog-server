@@ -14,18 +14,42 @@ export const chooseModel = (model: ModelName): ModelProvider => {
   }
 };
 
-export const flattenObjectWithoutProps = (obj) => {
+const isPlainObject = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+};
+
+const hasObjectItems = (array) => {
+  return array.some((item) => typeof item === 'object' && item !== null);
+};
+
+export const flattenObjectWithoutProps = (input) => {
+  if (Array.isArray(input)) {
+    return input.map((item) => flattenObjectWithoutProps(item));
+  }
+
   const newObj = {};
-  Object.keys(obj).forEach((key) => {
-    const value = obj[key];
+  Object.keys(input).forEach((key) => {
+    const value = input[key];
     if (value !== null && typeof value === 'object') {
-      if (Array.isArray(value)) {
+      if (Array.isArray(value) && hasObjectItems(value)) {
         newObj[key] = value.map((item) => flattenObjectWithoutProps(item));
+      } else if (isPlainObject(value)) {
+        Object.assign(newObj, flattenObjectWithoutProps(value));
+      } else {
+        newObj[key] = value;
+      }
+    } else if (key === 'props') {
+      if (Array.isArray(value)) {
+        if (!value) {
+          return;
+        }
+        const flattenedArray = value.map((item) =>
+          flattenObjectWithoutProps(item),
+        );
+        newObj[key] = flattenedArray.flat();
       } else {
         Object.assign(newObj, flattenObjectWithoutProps(value));
       }
-    } else if (key === 'props') {
-      Object.assign(newObj, flattenObjectWithoutProps(value));
     } else {
       newObj[key] = value;
     }
