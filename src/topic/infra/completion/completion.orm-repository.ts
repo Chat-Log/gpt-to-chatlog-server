@@ -154,12 +154,16 @@ export class CompletionOrmRepository extends BaseOrmRepository<
       .select(
         "strftime('%Y', completion.createdAt) as year, COUNT(completion.id) as count",
       )
+      .andWhere("strftime('%Y', completion.createdAt) = :year", {
+        year: String(year),
+      })
+
       .groupBy('year')
-      .getRawMany();
+      .getRawOne();
 
     return {
       daily: dailyCompletionCounts,
-      yearly: yearlyCompletionCounts,
+      yearly: yearlyCompletionCounts || { year, count: 0 },
     };
   }
 }
