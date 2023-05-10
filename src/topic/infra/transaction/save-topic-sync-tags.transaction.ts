@@ -31,9 +31,17 @@ export class SaveTopicSyncTagsTransaction extends BaseTransaction<InputData> {
       conflictPaths: ['id'],
       skipUpdateIfNoValuesChanged: true,
     });
+    const tagEntities = topicEntity.tags;
+    tagEntities.forEach((tagEntity) => {
+      tagEntity.topic = topicEntity;
+    });
 
     try {
       await manager.insert(CompletionOrmEntity, completion);
+      await manager.upsert(TagOrmEntity, tagEntities, {
+        conflictPaths: ['id'],
+        skipUpdateIfNoValuesChanged: true,
+      });
     } catch (err) {
       console.log(err);
     }
