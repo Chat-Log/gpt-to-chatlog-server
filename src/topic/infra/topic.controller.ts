@@ -150,4 +150,11 @@ export class TopicController {
     const topic = await this.topicService.retrieveTopic(topicId, userId);
     return new TopicCommonResponseDto().toResponse(topic);
   }
+
+  @Get('/models')
+  @ApiOperation({ summary: 'Get models' })
+  async retrieveModels() {
+    const models = await this.topicService.retrieveModels();
+    return new TopicCommonResponseDto().toResponse(models);
+  }
 }
