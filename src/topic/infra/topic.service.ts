@@ -119,7 +119,7 @@ export class TopicService {
       pageSize,
     );
   }
-  getModelNameValues = () => {
+  private getModelNameValues = () => {
     return Object.values(ModelName);
   };
   async retrieveModels() {
