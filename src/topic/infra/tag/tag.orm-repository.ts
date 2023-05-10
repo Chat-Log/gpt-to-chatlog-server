@@ -21,7 +21,7 @@ export class TagOrmRepository extends BaseOrmRepository<Tag, TagEntity> {
     const queryBuilder = this.prepareQuery();
     queryBuilder
       .select('tag.name', 'name')
-      .leftJoin('tag.topics', 'topic')
+      .leftJoin('tag.topic', 'topic')
       .andWhere(`topic.userId = :userId`, { userId });
     queryBuilder.distinct(true);
     const tags = await queryBuilder.getRawMany();

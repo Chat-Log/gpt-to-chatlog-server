@@ -27,5 +27,5 @@ export class TagOrmEntity implements TagEntity {
   updatedAt: Date;
 
   @ManyToOne(() => TopicOrmEntity, (topic) => topic.tags, {})
-  topics: TopicEntity[];
+  topic: TopicEntity;
 }
