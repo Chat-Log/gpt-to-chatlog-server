@@ -13,6 +13,7 @@ import { SaveTopicSyncTagsTransaction } from './transaction/save-topic-sync-tags
 import { SearchCompletionsWithTopicOptions } from '../../common/interface/interface';
 import { Readable } from 'stream';
 import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
+import { ModelName } from '../../common/enum/enum';
 
 @Injectable()
 export class TopicService {
@@ -117,5 +118,11 @@ export class TopicService {
       pageIndex,
       pageSize,
     );
+  }
+  private getModelNameValues = () => {
+    return Object.values(ModelName);
+  };
+  async retrieveModels() {
+    return this.getModelNameValues();
   }
 }

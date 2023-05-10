@@ -28,6 +28,9 @@ export const flattenObjectWithoutProps = (input) => {
   }
 
   const newObj = {};
+  if (typeof input == 'string') {
+    return input;
+  }
   Object.keys(input).forEach((key) => {
     const value = input[key];
     if (value !== null && typeof value === 'object') {
@@ -52,5 +55,6 @@ export const flattenObjectWithoutProps = (input) => {
       newObj[key] = value;
     }
   });
+  // console.log(newObj);
   return newObj;
 };
