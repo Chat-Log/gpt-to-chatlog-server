@@ -33,8 +33,6 @@ export const flattenObjectWithoutProps = (input) => {
     if (value !== null && typeof value === 'object') {
       if (Array.isArray(value) && hasObjectItems(value)) {
         newObj[key] = value.map((item) => flattenObjectWithoutProps(item));
-      } else if (isPlainObject(value)) {
-        Object.assign(newObj, flattenObjectWithoutProps(value));
       } else {
         newObj[key] = value;
       }
