@@ -57,7 +57,9 @@ export class AlpacaModelService implements OnModuleInit, OnModuleDestroy {
           this.chatProcess.stdout.off('data', onData);
         }
       } else {
-        responseStream.push(data);
+        const cleanedData = data.toString().replace(/\x1B\[\d+m/g, '');
+
+        responseStream.push(cleanedData);
       }
     };
 
