@@ -13,6 +13,7 @@ import { UserModule } from '../../user/infra/user.module';
 import { UserService } from '../../user/infra/user.service';
 import { UserOrmRepository } from '../../user/infra/user.orm-repository';
 import { UserOrmEntity } from '../../user/infra/user.orm-entity';
+import { ModelsModule } from '../../ai-models/models.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserOrmEntity } from '../../user/infra/user.orm-entity';
       UserOrmEntity,
     ]),
     UserModule,
+    ModelsModule,
   ],
   controllers: [TopicController],
   providers: [

@@ -1,6 +1,7 @@
 export enum ModelName {
   'GPT3.5_TURBO' = 'gpt3.5_turbo',
   'MOCK' = 'mock',
+  'ALPACA' = 'alpaca',
 }
 
 export enum UserRole {
