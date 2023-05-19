@@ -12,7 +12,7 @@ import {
 } from '../../common/interface/interface';
 
 interface TopicFindOptions {
-  completionIdsIn?: string[];
+  completionReferCount?: number;
 }
 @Injectable()
 export class TopicOrmRepository extends BaseOrmRepository<Topic, TopicEntity> {
@@ -33,17 +33,20 @@ export class TopicOrmRepository extends BaseOrmRepository<Topic, TopicEntity> {
     return new TopicMapper().toModel(await query.getOne());
   }
 
-  public async findOneWithCompletionInIds(
+  public async findOneWithPreviousCompletions(
     options: IFindOneOptions<DeepPartial<TopicEntity>> & TopicFindOptions,
   ) {
     const query = this.prepareFindOneQuery(options);
     query.leftJoinAndSelect('topic.tags', 'tags');
     query.leftJoinAndSelect('topic.user', 'user');
-    if (options?.completionIdsIn && options?.completionIdsIn.length > 0) {
-      query.leftJoinAndSelect('topic.completions', 'completions');
-      query.andWhere('completions.id IN (:...completionIdsIn)', {
-        completionIdsIn: options.completionIdsIn,
-      });
+    if (options?.completionReferCount) {
+      query.leftJoinAndSelect(
+        'topic.completions',
+        'completions',
+        'completions.id IN ' +
+          '(SELECT id FROM completions WHERE topicId = topic.id ORDER BY createdAt DESC LIMIT :completionReferCount)',
+        { completionReferCount: options.completionReferCount },
+      );
     }
     return new TopicMapper().toModel(await query.getOne());
   }

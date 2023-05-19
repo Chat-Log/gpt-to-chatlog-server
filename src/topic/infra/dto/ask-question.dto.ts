@@ -2,6 +2,7 @@ import {
   IsArray,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -51,10 +52,18 @@ export class AskQuestionDto {
   topicTitle: string;
 
   @ApiProperty({
-    description: 'Array of IDs of previous question-answer pairs (optional)',
+    description: '[deprecated] this property will be deleted.',
     example: ['111', '222'],
   })
   @IsOptional()
   @IsArray()
   prevCompletionIds: string[];
+
+  @ApiProperty({
+    description: 'completion count to refer when asking question. default is 5',
+    example: 5,
+  })
+  @IsOptional()
+  @IsNumber()
+  completionReferCount: number;
 }
