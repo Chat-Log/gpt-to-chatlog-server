@@ -1,16 +1,32 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, Res, UseGuards } from "@nestjs/common";
-import { TopicService } from "./topic.service";
-import { AskQuestionDto } from "./dto/ask-question.dto";
-import { GetUserIdFromAccessToken } from "../../common/decorator/get-userid-from-accesstoken.decorator";
-import { ChangeTopicTitleDto } from "./dto/change-topic-title.dto";
-import { SearchCompletionsDto } from "./dto/search-completions.dto";
-import { SearchCompletionsWithTopicOptions } from "../../common/interface/interface";
-import { TopicCommonResponseDto } from "./dto/topic.common-response.dto";
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
-import { UserGuard } from "../../common/guard/user.guard";
-import { RetrieveDailyCompletionCountsDto } from "./dto/retrieve-daily-completion-counts.dto";
-import { Response } from "express";
-import { RetrieveRecentTopicsTitleDto } from "./dto/retrieve-recent-topics-title.dto";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { TopicService } from './topic.service';
+import { AskQuestionDto } from './dto/ask-question.dto';
+import { GetUserIdFromAccessToken } from '../../common/decorator/get-userid-from-accesstoken.decorator';
+import { ChangeTopicTitleDto } from './dto/change-topic-title.dto';
+import { SearchCompletionsDto } from './dto/search-completions.dto';
+import { SearchCompletionsWithTopicOptions } from '../../common/interface/interface';
+import { TopicCommonResponseDto } from './dto/topic.common-response.dto';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
+import { UserGuard } from '../../common/guard/user.guard';
+import { RetrieveDailyCompletionCountsDto } from './dto/retrieve-daily-completion-counts.dto';
+import { Response } from 'express';
+import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
+import { RetrieveUsedTokenCountDto } from './dto/retrieve-used-token-count.dto';
 
 @Controller()
 @ApiTags('Topic')
@@ -110,6 +126,27 @@ export class TopicController {
     const completionCounts =
       await this.topicService.retrieveDailyCompletionCounts(userId, year);
     return new TopicCommonResponseDto().toResponse(completionCounts);
+  }
+
+  @ApiOperation({
+    summary:
+      'retrieve usedTokenCount by models.if you want to retrieve only with each year, just put year,' +
+      'if you want to retrieve with each month, put year and month',
+  })
+  @Get('/completions/token/counts')
+  async retrieveUsedTokenCount(
+    @Query() dto: RetrieveUsedTokenCountDto,
+    @GetUserIdFromAccessToken() userId: string,
+  ) {
+    const { year, month, modelnames: modelNames, groupByEachModel } = dto;
+    const usedTokenCount = await this.topicService.retrieveUsedTokenCount(
+      userId,
+      modelNames,
+      year,
+      month,
+      groupByEachModel,
+    );
+    return new TopicCommonResponseDto().toResponse(usedTokenCount);
   }
 
   @Get('/topics/recent')

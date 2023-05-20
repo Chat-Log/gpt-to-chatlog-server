@@ -1,17 +1,17 @@
-import { CompletionMapper } from "./completion.mapper";
-import { CompletionOrmEntity } from "./completion.orm-entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Completion } from "../../domain/completion/completion";
-import { BaseOrmRepository } from "../../../common/base.orm-repository";
-import { CompletionEntity } from "../../domain/completion/completion.entity";
-import { Repository, SelectQueryBuilder } from "typeorm";
-import { Injectable } from "@nestjs/common";
+import { CompletionMapper } from './completion.mapper';
+import { CompletionOrmEntity } from './completion.orm-entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Completion } from '../../domain/completion/completion';
+import { BaseOrmRepository } from '../../../common/base.orm-repository';
+import { CompletionEntity } from '../../domain/completion/completion.entity';
+import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 import {
   RetrieveDailyCompletionCountsResult,
   SearchCompletionsWithTopicOptions,
-  SearchCompletionsWithTopicResult
-} from "../../../common/interface/interface";
-import { SearchType } from "../../../common/enum/enum";
+  SearchCompletionsWithTopicResult,
+} from '../../../common/interface/interface';
+import { ModelName, SearchType } from '../../../common/enum/enum';
 
 @Injectable()
 export class CompletionOrmRepository extends BaseOrmRepository<
@@ -165,5 +165,60 @@ export class CompletionOrmRepository extends BaseOrmRepository<
       daily: dailyCompletionCounts,
       yearly: yearlyCompletionCounts || { year, count: 0 },
     };
+  }
+
+  async retrieveUsedTokenCount(
+    userId: string,
+    modelNames: ModelName[],
+    year: string,
+    options?: { month?: string; groupByEachModel?: boolean },
+  ) {
+    const queryBuilder = this.prepareQuery();
+
+    queryBuilder.leftJoin('completion.topic', 'topic');
+    queryBuilder.andWhere('topic.userId = :userId', { userId });
+    if (modelNames?.length > 0) {
+      queryBuilder.andWhere('completion.modelName IN (:...modelNames)', {
+        modelNames,
+      });
+    }
+
+    if (!year) {
+      year = new Date().getFullYear().toString();
+    }
+
+    let dateCondition = '';
+
+    if (year && options?.month) {
+      const startDate = new Date(
+        Number(year),
+        Number(options.month) - 1,
+        1,
+      ).toISOString();
+      const endDate = new Date(
+        Number(year),
+        Number(options.month),
+        0,
+      ).toISOString();
+      dateCondition = `completion.createdAt BETWEEN '${startDate}' AND '${endDate}'`;
+    } else if (year) {
+      const startDate = new Date(Number(year), 0, 1).toISOString();
+      const endDate = new Date(Number(year), 11, 31).toISOString();
+      dateCondition = `completion.createdAt BETWEEN '${startDate}' AND '${endDate}'`;
+    }
+
+    const query = queryBuilder
+      .clone()
+      .select(
+        `strftime('%Y-%m-%d', completion.createdAt) as date, ${
+          options?.groupByEachModel ? 'completion.modelName,' : ''
+        } SUM(completion.tokenCount) as count`,
+      )
+      .andWhere(dateCondition)
+      .groupBy(
+        `date${options?.groupByEachModel ? ', completion.modelName' : ''}`,
+      );
+
+    return await query.getRawMany();
   }
 }

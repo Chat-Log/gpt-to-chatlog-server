@@ -126,4 +126,51 @@ export class TopicService {
   async retrieveModels() {
     return this.getModelNameValues();
   }
+
+  async retrieveUsedTokenCount(
+    userId: string,
+    modelNames: ModelName[],
+    year: string,
+    month?: string,
+    groupByEachModel?: boolean,
+  ) {
+    const result = await this.completionRepository.retrieveUsedTokenCount(
+      userId,
+      modelNames,
+      year,
+      { groupByEachModel, month },
+    );
+    if (groupByEachModel) {
+      const dailyCounts: { [date: string]: { [modelName: string]: number } } =
+        {};
+      result.forEach((row: any) => {
+        const date = row.date;
+        const modelName = row.modelName;
+        const count = row.count;
+        if (!dailyCounts[date]) {
+          dailyCounts[date] = {};
+        }
+        dailyCounts[date][modelName] = count;
+      });
+
+      const output = [];
+      Object.keys(dailyCounts).forEach((date) => {
+        const countsByModel = dailyCounts[date];
+        const entry = { date, ...countsByModel };
+        output.push(entry);
+      });
+
+      return output;
+    } else {
+      const dailyCounts: { date: string; count: number }[] = [];
+      result.forEach((row: any) => {
+        const date = row.date;
+        const count = row.count;
+        const entry = { date, count };
+        dailyCounts.push(entry);
+      });
+
+      return dailyCounts;
+    }
+  }
 }
