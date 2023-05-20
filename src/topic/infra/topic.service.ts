@@ -36,6 +36,7 @@ export class TopicService {
       topicId,
       prevCompletionIds,
       topicTitle,
+      completionReferCount = 5,
     } = dto;
     const user = await this.userService.findUserByIdOrThrowError(userId);
     let topic: Topic;
@@ -47,8 +48,8 @@ export class TopicService {
       }
       changeTopicTitleRequired = true;
     } else {
-      topic = await this.topicRepository.findOneWithCompletionInIds({
-        completionIdsIn: prevCompletionIds,
+      topic = await this.topicRepository.findOneWithPreviousCompletions({
+        completionReferCount,
         where: { id: topicId, user: { id: userId } },
       });
       if (!topic) {
