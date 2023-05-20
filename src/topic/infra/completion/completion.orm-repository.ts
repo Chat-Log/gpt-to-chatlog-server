@@ -1,17 +1,17 @@
-import { CompletionMapper } from './completion.mapper';
-import { CompletionOrmEntity } from './completion.orm-entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Completion } from '../../domain/completion/completion';
-import { BaseOrmRepository } from '../../../common/base.orm-repository';
-import { CompletionEntity } from '../../domain/completion/completion.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { CompletionMapper } from "./completion.mapper";
+import { CompletionOrmEntity } from "./completion.orm-entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Completion } from "../../domain/completion/completion";
+import { BaseOrmRepository } from "../../../common/base.orm-repository";
+import { CompletionEntity } from "../../domain/completion/completion.entity";
+import { Repository, SelectQueryBuilder } from "typeorm";
+import { Injectable } from "@nestjs/common";
 import {
   RetrieveDailyCompletionCountsResult,
   SearchCompletionsWithTopicOptions,
-  SearchCompletionsWithTopicResult,
-} from '../../../common/interface/interface';
-import { SearchType } from '../../../common/enum/enum';
+  SearchCompletionsWithTopicResult
+} from "../../../common/interface/interface";
+import { SearchType } from "../../../common/enum/enum";
 
 @Injectable()
 export class CompletionOrmRepository extends BaseOrmRepository<
@@ -103,13 +103,13 @@ export class CompletionOrmRepository extends BaseOrmRepository<
     queryBuilder.orderBy('completion.createdAt', 'DESC');
     queryBuilder.skip(pageSize * (pageIndex - 1)).take(pageSize);
 
-    const [completions, count] = await queryBuilder.getManyAndCount();
+    const [completions, totalCount] = await queryBuilder.getManyAndCount();
 
     const result = completions.map((completion) =>
       this.transformSearchResult(completion),
     );
 
-    return [result, count];
+    return [result, totalCount];
   }
   private transformSearchResult(
     completion: CompletionOrmEntity,

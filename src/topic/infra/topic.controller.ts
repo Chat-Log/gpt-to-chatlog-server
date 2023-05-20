@@ -1,31 +1,16 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
-import { TopicService } from './topic.service';
-import { AskQuestionDto } from './dto/ask-question.dto';
-import { GetUserIdFromAccessToken } from '../../common/decorator/get-userid-from-accesstoken.decorator';
-import { ChangeTopicTitleDto } from './dto/change-topic-title.dto';
-import { SearchCompletionsDto } from './dto/search-completions.dto';
-import { SearchCompletionsWithTopicOptions } from '../../common/interface/interface';
-import { TopicCommonResponseDto } from './dto/topic.common-response.dto';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import { UserGuard } from '../../common/guard/user.guard';
-import { RetrieveDailyCompletionCountsDto } from './dto/retrieve-daily-completion-counts.dto';
-import { Response } from 'express';
-import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
+import { Body, Controller, Get, Param, Patch, Post, Query, Res, UseGuards } from "@nestjs/common";
+import { TopicService } from "./topic.service";
+import { AskQuestionDto } from "./dto/ask-question.dto";
+import { GetUserIdFromAccessToken } from "../../common/decorator/get-userid-from-accesstoken.decorator";
+import { ChangeTopicTitleDto } from "./dto/change-topic-title.dto";
+import { SearchCompletionsDto } from "./dto/search-completions.dto";
+import { SearchCompletionsWithTopicOptions } from "../../common/interface/interface";
+import { TopicCommonResponseDto } from "./dto/topic.common-response.dto";
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
+import { UserGuard } from "../../common/guard/user.guard";
+import { RetrieveDailyCompletionCountsDto } from "./dto/retrieve-daily-completion-counts.dto";
+import { Response } from "express";
+import { RetrieveRecentTopicsTitleDto } from "./dto/retrieve-recent-topics-title.dto";
 
 @Controller()
 @ApiTags('Topic')
@@ -98,10 +83,10 @@ export class TopicController {
       pageIndex: +pageIndex,
       query,
     };
-    const [completions, pageTotalCount] =
+    const [completions, totalCount] =
       await this.topicService.searchCompletionsWithTopic(options);
     return new TopicCommonResponseDto().toResponse(completions, {
-      pageTotalCount,
+      totalCount,
     });
   }
 
