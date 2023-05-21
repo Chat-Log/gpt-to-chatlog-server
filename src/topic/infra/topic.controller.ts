@@ -139,14 +139,14 @@ export class TopicController {
     @GetUserIdFromAccessToken() userId: string,
   ) {
     const { year, month, modelnames: modelNames, groupByEachModel } = dto;
-    const usedTokenCount = await this.topicService.retrieveUsedTokenCount(
+    const result = await this.topicService.retrieveUsedTokenCount(
       userId,
       modelNames,
       year,
       month,
       groupByEachModel,
     );
-    return new TopicCommonResponseDto().toResponse(usedTokenCount);
+    return new TopicCommonResponseDto().toResponse(result);
   }
 
   @Get('/topics/recent')

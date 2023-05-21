@@ -140,6 +140,8 @@ export class TopicService {
       year,
       { groupByEachModel, month },
     );
+    let monthlyCounts = { count: 0 };
+
     if (groupByEachModel) {
       const dailyCounts: { [date: string]: { [modelName: string]: number } } =
         {};
@@ -150,27 +152,45 @@ export class TopicService {
         if (!dailyCounts[date]) {
           dailyCounts[date] = {};
         }
+        if (!monthlyCounts[modelName]) {
+          monthlyCounts[modelName] = 0;
+        }
+
         dailyCounts[date][modelName] = count;
+        monthlyCounts[modelName] += count;
       });
 
       const output = [];
       Object.keys(dailyCounts).forEach((date) => {
         const countsByModel = dailyCounts[date];
-        const entry = { date, ...countsByModel };
+        let count = 0;
+        Object.keys(countsByModel).forEach((modelName) => {
+          count += countsByModel[modelName];
+        });
+        const entry = { date, ...countsByModel, count };
+
         output.push(entry);
       });
+      Object.keys(monthlyCounts).forEach((modelName) => {
+        monthlyCounts['count'] += monthlyCounts[modelName];
+      });
 
-      return output;
+      return { monthlyCounts, dailyCounts: output };
     } else {
       const dailyCounts: { date: string; count: number }[] = [];
       result.forEach((row: any) => {
         const date = row.date;
         const count = row.count;
+
+        monthlyCounts['count'] += count;
+
         const entry = { date, count };
         dailyCounts.push(entry);
       });
-
-      return dailyCounts;
+      return {
+        dailyCounts,
+        monthlyCounts,
+      };
     }
   }
 }
