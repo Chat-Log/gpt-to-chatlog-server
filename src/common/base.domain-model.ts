@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 export abstract class BaseDomainModel<Props> {
-  props: Partial<Props>;
+  protected props: Partial<Props>;
   protected constructor(props: Partial<Props>) {
     this.props = props;
   }
