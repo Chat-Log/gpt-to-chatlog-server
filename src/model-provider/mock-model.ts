@@ -8,16 +8,20 @@ import { User } from '../user/domain/user';
 export class MockModel extends ModelProvider {
   protected name: ModelName = ModelName['MOCK'];
 
-  askQuestion(
+  async askQuestion(
     user: User,
     completion: Completion,
     completeOptions: CompleteOptions,
-  ): Readable {
-    return new Readable({
-      read() {
-        this.push('hello');
-        this.push(null);
-      },
+  ): Promise<Readable> {
+    return new Promise((resolve) => {
+      resolve(
+        new Readable({
+          read() {
+            this.push('hello');
+            this.push(null);
+          },
+        }),
+      );
     });
   }
 

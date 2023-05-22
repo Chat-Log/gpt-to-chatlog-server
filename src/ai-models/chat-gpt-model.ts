@@ -23,53 +23,54 @@ const createHeaders = (apiKey: string) => {
 
 export class ChatGPTModel extends ModelProvider {
   protected name = ModelName['GPT3.5_TURBO'];
-  askQuestion(
+  async askQuestion(
     user: User,
     completion: Completion,
     options?: CompleteOptions,
-  ): any {
+  ): Promise<Readable> {
     const messages = this.mapToMessages([
       ...options?.previousCompletions,
       completion,
     ]);
 
-    const result = ChatGPTModel.sendQuestionToModel(user, messages);
+    let result;
+    try {
+      result = await ChatGPTModel.sendQuestionToModel(user, messages);
+    } catch (err) {
+      if (err?.response?.status == 401) {
+        throw new InvalidGptKeyException();
+      } else {
+        throw new InternalServerErrorCustomException();
+      }
+    }
 
     const readable = new Readable({
       read() {},
     });
+    const stream = result.data;
+    stream.on('data', (chunk) => {
+      const parsedString = ChatGPTModel.parseData(chunk.toString());
+      readable.push(parsedString);
+    });
+    stream.on('end', () => {
+      readable.push(null);
+    });
 
-    result
-      .then((res) => {
-        const stream = res.data;
-        stream.on('data', (chunk) => {
-          const parsedString = ChatGPTModel.parseData(chunk.toString());
-          readable.push(parsedString);
-        });
-        stream.on('end', () => {
-          readable.push(null);
-        });
-      })
-      .catch((err) => {
-        if (err?.response?.status == 401) {
-          throw new InvalidGptKeyException();
-        } else {
-          throw new InternalServerErrorCustomException();
-        }
-      });
-
-    return readable;
+    return new Promise((resolve) => resolve(readable));
   }
 
   countToken(completions: Completion[]): number {
     const messages = this.mapToMessages(completions);
     return this.tokenManager.getTokenCountForMessages(messages);
   }
-  static sendQuestionToModel(user: User, messages: IMessage[]): any {
+  static async sendQuestionToModel(
+    user: User,
+    messages: IMessage[],
+  ): Promise<any> {
     if (!user.getPropsCopy().gptKey) {
       throw new InvalidGptKeyException('no have key');
     }
-    return axios.post(
+    return await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
         ...data,

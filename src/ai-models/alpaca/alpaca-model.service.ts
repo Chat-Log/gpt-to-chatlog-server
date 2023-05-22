@@ -43,7 +43,7 @@ export class AlpacaModelService implements OnModuleInit, OnModuleDestroy {
     this.chatProcess.kill();
   }
 
-  sendQuestion(question: string): Readable {
+  async sendQuestion(question: string): Promise<Readable> {
     const responseStream = new Readable({
       read() {},
     });
