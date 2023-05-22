@@ -1,9 +1,10 @@
-import { Readable } from 'stream';
 import { CompleteOptions } from '../common/interface/interface';
 import { ModelName } from '../common/enum/enum';
 import { ModelProvider } from '../model-provider/model-provider';
 import { Completion } from '../topic/domain/completion/completion';
 import { AlpacaModelService } from './alpaca/alpaca-model.service';
+import { User } from '../user/domain/user';
+import { Readable } from 'stream';
 
 export class AlpacaModel extends ModelProvider {
   alpacaModelService = AlpacaModelService.getInstance();
@@ -13,6 +14,7 @@ export class AlpacaModel extends ModelProvider {
   protected name = ModelName['ALPACA'];
 
   askQuestion(
+    user: User,
     completion: Completion,
     completeOptions: CompleteOptions,
   ): Readable {

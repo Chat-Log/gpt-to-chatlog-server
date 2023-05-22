@@ -1,10 +1,12 @@
 import { Readable } from 'stream';
 import axios from 'axios';
-import Config from '../config/config';
 import { CompleteOptions, IMessage } from '../common/interface/interface';
 import { ModelName } from '../common/enum/enum';
 import { ModelProvider } from '../model-provider/model-provider';
 import { Completion } from '../topic/domain/completion/completion';
+import { User } from '../user/domain/user';
+import { InvalidGptKeyException } from '../common/exception/bad-request.exception';
+import { InternalServerErrorCustomException } from '../common/exception/internal.exception';
 
 const data = {
   model: 'gpt-3.5-turbo',
@@ -12,20 +14,26 @@ const data = {
   max_tokens: 1048,
 };
 
-const headers = {
-  'Content-Type': 'application/json',
-  Authorization: `Bearer ${Config.chatGptApiKey}`,
+const createHeaders = (apiKey: string) => {
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${apiKey}`,
+  };
 };
 
 export class ChatGPTModel extends ModelProvider {
   protected name = ModelName['GPT3.5_TURBO'];
-  askQuestion(completion: Completion, options?: CompleteOptions): any {
+  askQuestion(
+    user: User,
+    completion: Completion,
+    options?: CompleteOptions,
+  ): any {
     const messages = this.mapToMessages([
       ...options?.previousCompletions,
       completion,
     ]);
 
-    const result = ChatGPTModel.sendQuestionToModel(messages);
+    const result = ChatGPTModel.sendQuestionToModel(user, messages);
 
     const readable = new Readable({
       read() {},
@@ -34,18 +42,20 @@ export class ChatGPTModel extends ModelProvider {
     result
       .then((res) => {
         const stream = res.data;
-
         stream.on('data', (chunk) => {
           const parsedString = ChatGPTModel.parseData(chunk.toString());
           readable.push(parsedString);
         });
-
         stream.on('end', () => {
           readable.push(null);
         });
       })
       .catch((err) => {
-        // console.error(err);
+        if (err?.response?.status == 401) {
+          throw new InvalidGptKeyException();
+        } else {
+          throw new InternalServerErrorCustomException();
+        }
       });
 
     return readable;
@@ -55,7 +65,10 @@ export class ChatGPTModel extends ModelProvider {
     const messages = this.mapToMessages(completions);
     return this.tokenManager.getTokenCountForMessages(messages);
   }
-  static sendQuestionToModel(messages: IMessage[]): any {
+  static sendQuestionToModel(user: User, messages: IMessage[]): any {
+    if (!user.getPropsCopy().gptKey) {
+      throw new InvalidGptKeyException('no have key');
+    }
     return axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
@@ -63,12 +76,11 @@ export class ChatGPTModel extends ModelProvider {
         messages,
       },
       {
-        headers,
+        headers: createHeaders(user.getPropsCopy().gptKey),
         responseType: 'stream',
       },
     );
   }
-
   mapToMessages(completions: Completion[]): IMessage[] {
     const len = completions.length;
     const messages = completions.map((completion, idx) => {
