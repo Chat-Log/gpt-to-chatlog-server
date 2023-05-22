@@ -35,7 +35,6 @@ export class TopicService {
       question,
       tagNames,
       topicId,
-      prevCompletionIds,
       topicTitle,
       completionReferCount = 5,
     } = dto;
@@ -58,10 +57,13 @@ export class TopicService {
       }
       topic.syncTagsWithNewTagNames(tagNames, true);
     }
-    const answerStream = topic.askToModel(chooseModel(modelName), question, {
-      changeTopicTitleRequired,
-    });
-
+    const answerStream = await topic.askToModel(
+      chooseModel(modelName),
+      question,
+      {
+        changeTopicTitleRequired,
+      },
+    );
     answerStream.on('data', (data) => {});
     answerStream.on('end', async () => {
       await new SaveTopicSyncTagsTransaction(this.dataSource).run({

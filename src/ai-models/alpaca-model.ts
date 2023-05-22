@@ -13,11 +13,11 @@ export class AlpacaModel extends ModelProvider {
   }
   protected name = ModelName['ALPACA'];
 
-  askQuestion(
+  async askQuestion(
     user: User,
     completion: Completion,
     completeOptions: CompleteOptions,
-  ): Readable {
+  ): Promise<Readable> {
     const messages = this.mapToMessages(completion);
     return this.alpacaModelService.sendQuestion(messages);
   }
