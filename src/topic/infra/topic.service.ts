@@ -14,6 +14,7 @@ import { SearchCompletionsWithTopicOptions } from '../../common/interface/interf
 import { Readable } from 'stream';
 import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
 import { ModelName } from '../../common/enum/enum';
+import { ChatGptPricePerToken } from '../../common/constant/chatgpt-price-per-token';
 
 @Injectable()
 export class TopicService {
@@ -67,7 +68,6 @@ export class TopicService {
         topic,
       });
     });
-
     return { answerStream, topic };
   }
   async changeTopicTitle(topicId: string, topicName: string): Promise<Topic> {
@@ -140,6 +140,8 @@ export class TopicService {
       year,
       { groupByEachModel, month },
     );
+    let monthlyCounts = { count: 0 };
+
     if (groupByEachModel) {
       const dailyCounts: { [date: string]: { [modelName: string]: number } } =
         {};
@@ -150,27 +152,91 @@ export class TopicService {
         if (!dailyCounts[date]) {
           dailyCounts[date] = {};
         }
+        if (!monthlyCounts[modelName]) {
+          monthlyCounts[modelName] = 0;
+        }
+
         dailyCounts[date][modelName] = count;
+        monthlyCounts[modelName] += count;
       });
 
       const output = [];
       Object.keys(dailyCounts).forEach((date) => {
         const countsByModel = dailyCounts[date];
-        const entry = { date, ...countsByModel };
+        let count = 0;
+        Object.keys(countsByModel).forEach((modelName) => {
+          count += countsByModel[modelName];
+        });
+        const entry = { date, ...countsByModel, count };
+
         output.push(entry);
       });
+      Object.keys(monthlyCounts).forEach((modelName) => {
+        monthlyCounts['count'] += monthlyCounts[modelName];
+      });
 
-      return output;
+      return { monthlyCounts, dailyCounts: output };
     } else {
       const dailyCounts: { date: string; count: number }[] = [];
       result.forEach((row: any) => {
         const date = row.date;
         const count = row.count;
+
+        monthlyCounts['count'] += count;
+
         const entry = { date, count };
         dailyCounts.push(entry);
       });
-
-      return dailyCounts;
+      return {
+        dailyCounts,
+        monthlyCounts,
+      };
     }
+  }
+
+  async retrieveExpectedFee(
+    userId: string,
+    modelNames: ModelName[],
+    year: string,
+    month: string,
+  ) {
+    const { monthlyCounts, dailyCounts } = await this.retrieveUsedTokenCount(
+      userId,
+      modelNames,
+      year,
+      month,
+      true,
+    );
+    delete monthlyCounts['count'];
+    let totalFee = 0;
+
+    for (const modelName of Object.keys(monthlyCounts)) {
+      const count = monthlyCounts[modelName];
+      if (ChatGptPricePerToken[modelName]) {
+        monthlyCounts[modelName] = count * ChatGptPricePerToken[modelName];
+        totalFee += monthlyCounts[modelName];
+      } else {
+        monthlyCounts[modelName] = 0;
+      }
+      monthlyCounts['totalFee'] = totalFee;
+    }
+    for (const count of dailyCounts) {
+      delete count['count'];
+      let totalFee = 0;
+
+      Object.keys(count).forEach((key) => {
+        if (key !== 'date' && key !== 'count') {
+          if (ChatGptPricePerToken[key]) {
+            count[key] = count[key] * ChatGptPricePerToken[key];
+            totalFee += count[key];
+          } else {
+            count[key] = 0;
+          }
+        }
+      });
+      count['totalFee'] = totalFee;
+    }
+
+    return { monthlyCounts, dailyCounts };
   }
 }
