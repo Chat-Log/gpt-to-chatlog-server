@@ -27,6 +27,7 @@ import { RetrieveDailyCompletionCountsDto } from './dto/retrieve-daily-completio
 import { Response } from 'express';
 import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
 import { RetrieveUsedTokenCountDto } from './dto/retrieve-used-token-count.dto';
+import { RetrieveExceptedFeeDto } from './dto/retrieve-excepted-fee.dto';
 
 @Controller()
 @ApiTags('Topic')
@@ -145,6 +146,26 @@ export class TopicController {
       year,
       month,
       groupByEachModel,
+    );
+    return new TopicCommonResponseDto().toResponse(result);
+  }
+
+  @ApiOperation({
+    summary:
+      'retrieve fee by models.if you want to retrieve only with each year, just put year,' +
+      'if you want to retrieve with each month, put year and month',
+  })
+  @Get('/completions/fee')
+  async retrieveExpectedFees(
+    @Query() dto: RetrieveExceptedFeeDto,
+    @GetUserIdFromAccessToken() userId: string,
+  ) {
+    const { year, month, modelnames: modelNames } = dto;
+    const result = await this.topicService.retrieveExpectedFee(
+      userId,
+      modelNames,
+      year,
+      month,
     );
     return new TopicCommonResponseDto().toResponse(result);
   }

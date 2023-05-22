@@ -14,6 +14,7 @@ import { SearchCompletionsWithTopicOptions } from '../../common/interface/interf
 import { Readable } from 'stream';
 import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
 import { ModelName } from '../../common/enum/enum';
+import { ChatGptPricePerToken } from '../../common/constant/chatgpt-price-per-token';
 
 @Injectable()
 export class TopicService {
@@ -67,7 +68,6 @@ export class TopicService {
         topic,
       });
     });
-
     return { answerStream, topic };
   }
   async changeTopicTitle(topicId: string, topicName: string): Promise<Topic> {
@@ -192,5 +192,51 @@ export class TopicService {
         monthlyCounts,
       };
     }
+  }
+
+  async retrieveExpectedFee(
+    userId: string,
+    modelNames: ModelName[],
+    year: string,
+    month: string,
+  ) {
+    const { monthlyCounts, dailyCounts } = await this.retrieveUsedTokenCount(
+      userId,
+      modelNames,
+      year,
+      month,
+      true,
+    );
+    delete monthlyCounts['count'];
+    let totalFee = 0;
+
+    for (const modelName of Object.keys(monthlyCounts)) {
+      const count = monthlyCounts[modelName];
+      if (ChatGptPricePerToken[modelName]) {
+        monthlyCounts[modelName] = count * ChatGptPricePerToken[modelName];
+        totalFee += monthlyCounts[modelName];
+      } else {
+        monthlyCounts[modelName] = 0;
+      }
+      monthlyCounts['totalFee'] = totalFee;
+    }
+    for (const count of dailyCounts) {
+      delete count['count'];
+      let totalFee = 0;
+
+      Object.keys(count).forEach((key) => {
+        if (key !== 'date' && key !== 'count') {
+          if (ChatGptPricePerToken[key]) {
+            count[key] = count[key] * ChatGptPricePerToken[key];
+            totalFee += count[key];
+          } else {
+            count[key] = 0;
+          }
+        }
+      });
+      count['totalFee'] = totalFee;
+    }
+
+    return { monthlyCounts, dailyCounts };
   }
 }
