@@ -12,3 +12,9 @@ export class InvalidInputException extends BadRequestException {
     super(ErrorStatusCode.INVALID_INPUT, message);
   }
 }
+
+export class InvalidGptKeyException extends BadRequestException {
+  constructor(message: string = 'user dose not have key or invalid gpt key') {
+    super(ErrorStatusCode.INVALID_GPT_KEY, message);
+  }
+}

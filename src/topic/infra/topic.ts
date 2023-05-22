@@ -33,11 +33,11 @@ export class TopicImpl extends Topic {
   private getPreviousCompletions(): Completion[] {
     return this.props.completions.slice(0, this.props.completions.length - 1);
   }
-  askToModel(
+  async askToModel(
     modelProvider: ModelProvider,
     question: string,
     options?: AskOptions,
-  ): Readable {
+  ): Promise<Readable> {
     this.createQuestion(modelProvider, question);
     if (options?.changeTopicTitleRequired) {
       if (!this.props.title) {
@@ -48,7 +48,8 @@ export class TopicImpl extends Topic {
 
     let tokenCount = modelProvider.countToken(this.props.completions);
 
-    const resultStream = modelProvider.askQuestion(
+    const resultStream = await modelProvider.askQuestion(
+      this.props.user,
       this.getCurrentCompletion(),
       { previousCompletions: this.getPreviousCompletions() },
     );
@@ -85,7 +86,12 @@ export class TopicImpl extends Topic {
   }
   deleteTags(tags: Tag[]): void {
     this.props.tags?.forEach((tag) => {
-      if (tags?.find((tagToRemove) => tagToRemove.props.id == tag.props.id)) {
+      if (
+        tags?.find(
+          (tagToRemove) =>
+            tagToRemove.getPropsCopy().id == tag.getPropsCopy().id,
+        )
+      ) {
         tag.delete();
       }
     });
@@ -97,14 +103,16 @@ export class TopicImpl extends Topic {
   ): void {
     const newTags = tagNames
       .filter(
-        (tagName) => !this.props.tags?.find((tag) => tag.props.name == tagName),
+        (tagName) =>
+          !this.props.tags?.find((tag) => tag.getPropsCopy().name == tagName),
       )
       .map((tagName) => TagImpl.create(tagName));
     this.addTags(newTags);
 
     if (deleteOtherTags) {
       const deletedTags = this.props.tags?.filter(
-        (tag) => !tagNames?.find((tagName) => tagName == tag.props.name),
+        (tag) =>
+          !tagNames?.find((tagName) => tagName == tag.getPropsCopy().name),
       );
       this.deleteTags(deletedTags);
     }

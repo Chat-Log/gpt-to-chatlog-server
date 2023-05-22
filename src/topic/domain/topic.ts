@@ -10,7 +10,7 @@ export abstract class Topic extends BaseDomainModel<TopicProps> {
     modelProvider: ModelProvider,
     question: string,
     options?: any,
-  ): Readable;
+  ): Promise<Readable>;
   abstract addTags(tag: Tag[]): void;
   abstract syncTagsWithNewTagNames(
     tagNames: string[],

@@ -3,11 +3,13 @@ import { ModelName } from '../common/enum/enum';
 import { Completion } from '../topic/domain/completion/completion';
 import { CompleteOptions } from '../common/interface/interface';
 import { Readable } from 'stream';
+import { User } from '../user/domain/user';
 
 export class MockModel extends ModelProvider {
   protected name: ModelName = ModelName['MOCK'];
 
   askQuestion(
+    user: User,
     completion: Completion,
     completeOptions: CompleteOptions,
   ): Readable {

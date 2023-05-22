@@ -16,8 +16,10 @@ export enum ErrorStatusCode {
 
   //bad-request
   INVALID_INPUT = '4001',
+  INVALID_GPT_KEY = '4002',
 
   //internal
   UNKNOWN_EXCEPTION = '4501',
   NULL_OR_UNDEFINED_PARAMETER = '4506',
+  INTERNAL_SERVER_ERROR = '4507',
 }
