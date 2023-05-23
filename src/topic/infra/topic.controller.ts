@@ -90,7 +90,10 @@ export class TopicController {
   @UseGuards(UserGuard)
   @Get('/topics/completions')
   @ApiOperation({ summary: 'Search completions' })
-  async searchCompletions(@Query() dto: SearchCompletionsDto) {
+  async searchCompletions(
+    @GetUserIdFromAccessToken() userId: string,
+    @Query() dto: SearchCompletionsDto,
+  ) {
     const {
       tagnames: tagNames,
       onlylastcompletions: onlyLastCompletions,
@@ -112,7 +115,7 @@ export class TopicController {
       query,
     };
     const [completions, totalCount] =
-      await this.topicService.searchCompletionsWithTopic(options);
+      await this.topicService.searchCompletionsWithTopic(userId, options);
     return new TopicCommonResponseDto().toResponse(completions, {
       totalCount,
     });
