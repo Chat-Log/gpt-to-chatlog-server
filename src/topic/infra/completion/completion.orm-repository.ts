@@ -125,6 +125,7 @@ export class CompletionOrmRepository extends BaseOrmRepository<
       question: completion.question,
       answer: completion.answer,
       topicTitle: completion.topic?.title,
+      topicId: completion.topic?.id,
       tagNames: completion.topic?.tags?.map((tag) => tag.name),
       createdAt: completion.createdAt,
       modelName: completion.modelName,
