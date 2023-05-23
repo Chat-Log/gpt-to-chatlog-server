@@ -32,6 +32,9 @@ export class ChatGPTModel extends ModelProvider {
       ...options?.previousCompletions,
       completion,
     ]);
+    if (!user.getPropsCopy().gptKey) {
+      throw new InvalidGptKeyException('no have key');
+    }
 
     let result;
     try {
@@ -48,6 +51,7 @@ export class ChatGPTModel extends ModelProvider {
       read() {},
     });
     const stream = result.data;
+    5;
     stream.on('data', (chunk) => {
       const parsedString = ChatGPTModel.parseData(chunk.toString());
       readable.push(parsedString);
@@ -67,9 +71,6 @@ export class ChatGPTModel extends ModelProvider {
     user: User,
     messages: IMessage[],
   ): Promise<any> {
-    if (!user.getPropsCopy().gptKey) {
-      throw new InvalidGptKeyException('no have key');
-    }
     return await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
