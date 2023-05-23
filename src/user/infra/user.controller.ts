@@ -66,8 +66,8 @@ export class UserController {
   @Get('/email')
   async findEmailByPhone(@Query() dto: FindEmailByPhoneDto) {
     const { phone } = dto;
-    const email = await this.userService.findEmail(phone);
-    return new UserCommonResponseDto().toResponse({ email });
+    const emails = await this.userService.findEmail(phone);
+    return new UserCommonResponseDto().toResponse({ emails });
   }
 
   @Patch('/password/reset')
