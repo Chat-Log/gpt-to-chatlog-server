@@ -61,6 +61,7 @@ export interface SearchCompletionsWithTopicOptions {
 export interface SearchCompletionsWithTopicResult {
   completionId: string;
   question: string;
+  topicId: string;
   answer: string;
   topicTitle: string;
   tagNames: string[];
