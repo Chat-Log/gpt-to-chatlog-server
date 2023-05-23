@@ -96,8 +96,14 @@ export class TopicService {
     return 'Hello World!';
   }
 
-  async searchCompletionsWithTopic(options: SearchCompletionsWithTopicOptions) {
-    return await this.completionRepository.searchCompletionsWithTopic(options);
+  async searchCompletionsWithTopic(
+    userId: string,
+    options: SearchCompletionsWithTopicOptions,
+  ) {
+    return await this.completionRepository.searchCompletionsWithTopic(
+      userId,
+      options,
+    );
   }
 
   async retrieveAllTags(userId: string) {

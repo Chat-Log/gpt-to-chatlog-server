@@ -12,6 +12,7 @@ import {
   SearchCompletionsWithTopicResult,
 } from '../../../common/interface/interface';
 import { ModelName, SearchType } from '../../../common/enum/enum';
+import { UserNotFoundException } from '../../../common/exception/data-access.exception';
 
 @Injectable()
 export class CompletionOrmRepository extends BaseOrmRepository<
@@ -30,9 +31,9 @@ export class CompletionOrmRepository extends BaseOrmRepository<
   }
 
   async searchCompletionsWithTopic(
+    userId,
     options: SearchCompletionsWithTopicOptions,
   ): Promise<[SearchCompletionsWithTopicResult[], number]> {
-    console.log(options);
     const {
       tagNames,
       modelNames,
@@ -44,6 +45,8 @@ export class CompletionOrmRepository extends BaseOrmRepository<
       onlyLastCompletions,
     } = options;
     const queryBuilder = this.prepareQuery();
+    if (!userId) throw new UserNotFoundException(userId);
+
     queryBuilder.leftJoinAndSelect('completion.topic', 'topic');
     queryBuilder.leftJoinAndSelect('topic.tags', 'tag');
 
@@ -55,6 +58,7 @@ export class CompletionOrmRepository extends BaseOrmRepository<
         modelNames,
       });
     }
+
     if (query) {
       if (searchType === SearchType.QUESTION) {
         queryBuilder.andWhere('completion.question LIKE :query', {
@@ -75,6 +79,7 @@ export class CompletionOrmRepository extends BaseOrmRepository<
         );
       }
     }
+    queryBuilder.andWhere('topic.userId = :userId', { userId });
     if (date) {
       const startDate = new Date(
         date.getFullYear(),
