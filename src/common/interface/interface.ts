@@ -78,3 +78,7 @@ export interface RetrieveRecentTopicsTitleResult {
   id: string;
   title: string;
 }
+
+export interface AbortSignal {
+  isAborted: boolean;
+}

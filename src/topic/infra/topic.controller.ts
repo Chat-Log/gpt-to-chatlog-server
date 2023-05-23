@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -24,7 +25,7 @@ import {
 } from '@nestjs/swagger';
 import { UserGuard } from '../../common/guard/user.guard';
 import { RetrieveDailyCompletionCountsDto } from './dto/retrieve-daily-completion-counts.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
 import { RetrieveUsedTokenCountDto } from './dto/retrieve-used-token-count.dto';
 import { RetrieveExceptedFeeDto } from './dto/retrieve-excepted-fee.dto';
@@ -42,20 +43,25 @@ export class TopicController {
     @Body() dto: AskQuestionDto,
     @GetUserIdFromAccessToken() userId: string,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<void> {
+    const abortManager = {
+      isAborted: false,
+    };
     const { answerStream, topic } = await this.topicService.askQuestion(
       dto,
       userId,
+      abortManager,
     );
     res.write(
       'topicId:' + topic.getPropsCopy().id.toString() + '\nendFlag' + '\n',
     );
+    res.on('close', () => {
+      abortManager.isAborted = true;
+    });
+
     answerStream
       .on('data', (data) => {
-        if (this.isPaused) {
-          res.send('paused');
-          this.isPaused = false;
-        }
         const decodedData = data.toString('utf-8');
         res.write(decodedData);
       })
