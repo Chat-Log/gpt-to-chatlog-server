@@ -61,11 +61,16 @@ export class UserService {
     return user;
   }
   public async findEmail(phone: string) {
-    const user = await this.userRepository.findOne({ where: { phone: phone } });
-    if (!user) {
+    const users = await this.userRepository.find({ where: { phone: phone } });
+    if (!users) {
       throw new UserNotFoundException(`no exist user with phone : ${phone}`);
     }
-    return user.getPropsCopy().email;
+    const emails = [];
+    for (const user of users) {
+      emails.push(user.getPropsCopy().email);
+    }
+
+    return emails;
   }
 
   public async resetPassword(email: string, phone: string) {
