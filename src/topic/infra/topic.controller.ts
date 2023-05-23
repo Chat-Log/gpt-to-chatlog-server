@@ -33,6 +33,7 @@ import { RetrieveExceptedFeeDto } from './dto/retrieve-excepted-fee.dto';
 @ApiTags('Topic')
 @ApiBearerAuth()
 export class TopicController {
+  isPaused = false;
   constructor(private readonly topicService: TopicService) {}
 
   @Post('topics/completion')
@@ -51,6 +52,10 @@ export class TopicController {
     );
     answerStream
       .on('data', (data) => {
+        if (this.isPaused) {
+          res.send('paused');
+          this.isPaused = false;
+        }
         const decodedData = data.toString('utf-8');
         res.write(decodedData);
       })
@@ -61,6 +66,12 @@ export class TopicController {
         console.error('Stream error:', err);
         res.status(500).send(err.message);
       });
+  }
+
+  @Post('/topics/completion/pause')
+  @ApiOperation({ summary: 'pause completion' })
+  async pauseCompletion() {
+    this.isPaused = true;
   }
 
   @UseGuards(UserGuard)
