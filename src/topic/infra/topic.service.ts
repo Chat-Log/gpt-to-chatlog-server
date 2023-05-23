@@ -9,12 +9,15 @@ import { Topic } from '../domain/topic';
 import { chooseModel } from '../../common/util/util';
 import { DataNotFoundException } from '../../common/exception/data-access.exception';
 import { DataSource } from 'typeorm';
-import { SaveTopicSyncTagsTransaction } from './transaction/save-topic-sync-tags.transaction';
-import { SearchCompletionsWithTopicOptions } from '../../common/interface/interface';
+import {
+  AbortSignal,
+  SearchCompletionsWithTopicOptions,
+} from '../../common/interface/interface';
 import { Readable } from 'stream';
 import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
 import { ModelName } from '../../common/enum/enum';
 import { ChatGptPricePerToken } from '../../common/constant/chatgpt-price-per-token';
+import { SaveTopicSyncTagsTransaction } from './transaction/save-topic-sync-tags.transaction';
 
 @Injectable()
 export class TopicService {
@@ -29,6 +32,7 @@ export class TopicService {
   async askQuestion(
     dto: AskQuestionDto,
     userId: string,
+    abortManager: AbortSignal,
   ): Promise<{ answerStream: Readable; topic: Topic }> {
     const {
       modelName,
@@ -59,16 +63,22 @@ export class TopicService {
     }
     const answerStream = await topic.askToModel(
       chooseModel(modelName),
+      abortManager,
       question,
       {
         changeTopicTitleRequired,
       },
     );
-    answerStream.on('data', (data) => {});
+    answerStream.on('data', (data) => {
+      if (abortManager.isAborted) {
+        answerStream.emit('end');
+      }
+    });
     answerStream.on('end', async () => {
       await new SaveTopicSyncTagsTransaction(this.dataSource).run({
         topic,
       });
+      answerStream.destroy();
     });
     return { answerStream, topic };
   }

@@ -7,6 +7,7 @@ import {
 import { ChildProcess, spawn } from 'child_process';
 import { Readable } from 'stream';
 import { join } from 'path';
+import { AbortSignal } from '../../common/interface/interface';
 
 @Injectable()
 export class AlpacaModelService implements OnModuleInit, OnModuleDestroy {
@@ -43,7 +44,10 @@ export class AlpacaModelService implements OnModuleInit, OnModuleDestroy {
     this.chatProcess.kill();
   }
 
-  async sendQuestion(question: string): Promise<Readable> {
+  async sendQuestion(
+    question: string,
+    abortSignal: AbortSignal,
+  ): Promise<Readable> {
     const responseStream = new Readable({
       read() {},
     });
@@ -60,9 +64,12 @@ export class AlpacaModelService implements OnModuleInit, OnModuleDestroy {
         const cleanedData = data.toString().replace(/\x1B\[\d+m/g, '');
 
         responseStream.push(cleanedData);
+        if (abortSignal.isAborted) {
+          this.chatProcess.kill('SIGINT');
+          return responseStream;
+        }
       }
     };
-
     this.chatProcess.stdout.on('data', onData);
     this.chatProcess.stdin.write(question + '\n');
 

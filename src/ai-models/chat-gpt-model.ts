@@ -1,6 +1,10 @@
 import { Readable } from 'stream';
 import axios from 'axios';
-import { CompleteOptions, IMessage } from '../common/interface/interface';
+import {
+  AbortSignal,
+  CompleteOptions,
+  IMessage,
+} from '../common/interface/interface';
 import { ModelName } from '../common/enum/enum';
 import { ModelProvider } from '../model-provider/model-provider';
 import { Completion } from '../topic/domain/completion/completion';
@@ -25,6 +29,7 @@ export class ChatGPTModel extends ModelProvider {
   protected name = ModelName['GPT3.5_TURBO'];
   async askQuestion(
     user: User,
+    abortSignal: AbortSignal,
     completion: Completion,
     options?: CompleteOptions,
   ): Promise<Readable> {
@@ -36,13 +41,32 @@ export class ChatGPTModel extends ModelProvider {
       throw new InvalidGptKeyException('no have key');
     }
 
-    let result;
+    let result, cancel;
+    const cancelToken = new axios.CancelToken((c) => {
+      cancel = c;
+    });
     try {
-      result = await ChatGPTModel.sendQuestionToModel(user, messages);
+      result = await ChatGPTModel.sendQuestionToModel(
+        user,
+        messages,
+        cancelToken,
+      );
     } catch (err) {
       if (err?.response?.status == 401) {
         throw new InvalidGptKeyException();
       } else {
+        const result = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+            ...data,
+            stream: false,
+            messages,
+          },
+          {
+            headers: createHeaders(user.getPropsCopy().gptKey),
+            cancelToken,
+          },
+        );
         throw new InternalServerErrorCustomException();
       }
     }
@@ -51,13 +75,21 @@ export class ChatGPTModel extends ModelProvider {
       read() {},
     });
     const stream = result.data;
-    5;
     stream.on('data', (chunk) => {
       const parsedString = ChatGPTModel.parseData(chunk.toString());
+      if (abortSignal.isAborted) {
+        cancel();
+      }
       readable.push(parsedString);
     });
     stream.on('end', () => {
       readable.push(null);
+    });
+
+    stream.on('error', (err) => {
+      if (axios.isCancel(err)) {
+        console.log('Request canceled', err.message);
+      }
     });
 
     return new Promise((resolve) => resolve(readable));
@@ -70,6 +102,7 @@ export class ChatGPTModel extends ModelProvider {
   static async sendQuestionToModel(
     user: User,
     messages: IMessage[],
+    cancelToken: any,
   ): Promise<any> {
     return await axios.post(
       'https://api.openai.com/v1/chat/completions',
@@ -80,6 +113,7 @@ export class ChatGPTModel extends ModelProvider {
       {
         headers: createHeaders(user.getPropsCopy().gptKey),
         responseType: 'stream',
+        cancelToken,
       },
     );
   }

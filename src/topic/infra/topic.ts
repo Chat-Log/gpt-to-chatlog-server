@@ -8,6 +8,7 @@ import { Tag } from '../domain/tag/tag';
 import { Readable } from 'stream';
 import { TopicProps } from '../domain/topic.props';
 import { TagImpl } from './tag/tag';
+import { AbortSignal } from '../../common/interface/interface';
 
 interface AskOptions {
   changeTopicTitleRequired: boolean;
@@ -35,6 +36,7 @@ export class TopicImpl extends Topic {
   }
   async askToModel(
     modelProvider: ModelProvider,
+    abortManger: AbortSignal,
     question: string,
     options?: AskOptions,
   ): Promise<Readable> {
@@ -50,6 +52,7 @@ export class TopicImpl extends Topic {
 
     const resultStream = await modelProvider.askQuestion(
       this.props.user,
+      abortManger,
       this.getCurrentCompletion(),
       { previousCompletions: this.getPreviousCompletions() },
     );

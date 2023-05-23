@@ -10,6 +10,7 @@ export abstract class ModelProvider {
   protected abstract name: ModelName;
   abstract askQuestion(
     user: User,
+    abortSignal: { isAborted: boolean },
     completion: Completion,
     completeOptions: CompleteOptions,
   ): Promise<Readable>;
