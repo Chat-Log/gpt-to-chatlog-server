@@ -38,7 +38,6 @@ export class TopicService {
     const {
       modelName,
       question,
-      tagNames,
       topicId,
       topicTitle,
       completionReferCount = 5,
@@ -48,7 +47,7 @@ export class TopicService {
     let changeTopicTitleRequired = false;
 
     if (!topicId) {
-      topic = TopicImpl.createTopic(tagNames || [], user);
+      topic = TopicImpl.createTopic([], user);
       if (topicTitle) {
         topic.changeTopicTitle(topicTitle);
       }
@@ -61,7 +60,7 @@ export class TopicService {
       if (!topic) {
         throw new DataNotFoundException('topic not found with id : ' + topicId);
       }
-      topic.syncTagsWithNewTagNames(tagNames || [], true);
+      topic.syncTagsWithNewTagNames([], true);
     }
     const answerStream = await topic.askToModel(
       chooseModel(modelName),
