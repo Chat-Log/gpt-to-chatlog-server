@@ -11,5 +11,5 @@ export default {
   chatGptApiKey: process.env.CHATGPT_API_KEY,
   accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
   accessTokenExpired: process.env.ACCESS_TOKEN_EXPIRED,
-  clineLocalUrl: process.env.CLIENT_LOCAL_URL,
+  clientLocalUrl: process.env.CLIENT_LOCAL_URL,
 };
