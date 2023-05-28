@@ -5,6 +5,7 @@ import { TagEntity } from '../../domain/tag/tag.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagOrmEntity } from './tag.orm-entity';
 import { TagMapper } from './tag.mapper';
+import { TopicOrmEntity } from '../topic.orm-entity';
 
 export class TagOrmRepository extends BaseOrmRepository<Tag, TagEntity> {
   constructor(
@@ -26,5 +27,20 @@ export class TagOrmRepository extends BaseOrmRepository<Tag, TagEntity> {
     queryBuilder.distinct(true);
     const tags = await queryBuilder.getRawMany();
     return tags.map((tag) => tag.name);
+  }
+  async addTagToTopic(topicId: string, tag: Tag) {
+    const tagEntity = new TagMapper().toEntity(tag);
+    const newTopicEntity = new TopicOrmEntity();
+    newTopicEntity.id = topicId;
+    tagEntity.topic = newTopicEntity;
+    await this.repository.insert(tagEntity);
+  }
+  async deleteTagToTopic(topicId: string, tag: Tag) {
+    const tagEntity = new TagMapper().toEntity(tag);
+    const newTopicEntity = new TopicOrmEntity();
+    newTopicEntity.id = topicId;
+    tagEntity.topic = newTopicEntity;
+
+    await this.repository.remove(tagEntity);
   }
 }
