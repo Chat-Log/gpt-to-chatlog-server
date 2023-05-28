@@ -28,14 +28,6 @@ export class AskQuestionDto {
   question: string;
 
   @ApiProperty({
-    description: 'Array of tag names associated with the question',
-    example: ['nestjs', 'javascript'],
-  })
-  @IsNotEmpty()
-  @IsArray()
-  tagNames: string[];
-
-  @ApiProperty({
     description: 'ID of the topic associated with the question (optional)',
     example: '987654321',
   })
