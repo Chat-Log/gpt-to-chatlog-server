@@ -4,9 +4,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/infra/user.module';
 import { ExceptionModule } from './common/exception/exception.module';
 import { ModelsModule } from './ai-models/models.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'chatlog-client/build'),
+      exclude: ['/api*'],
+    }),
+
     TopicModule,
     UserModule,
     TypeOrmModule.forRoot({
