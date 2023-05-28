@@ -29,6 +29,8 @@ import { Request, Response } from 'express';
 import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title.dto';
 import { RetrieveUsedTokenCountDto } from './dto/retrieve-used-token-count.dto';
 import { RetrieveExceptedFeeDto } from './dto/retrieve-excepted-fee.dto';
+import { AddTopicTagDto } from './dto/add-topic-tag.dto';
+import { DeleteTopicTagDto } from './dto/delete-topic-tag.dto';
 
 @Controller()
 @ApiTags('Topic')
@@ -125,6 +127,30 @@ export class TopicController {
     return new TopicCommonResponseDto().toResponse(completions, {
       totalCount,
     });
+  }
+
+  @UseGuards(UserGuard)
+  @Patch('/topics/tags')
+  @ApiOperation({ summary: 'add topic tags' })
+  async addTopicTag(
+    @GetUserIdFromAccessToken() userId: string,
+    @Body() dto: AddTopicTagDto,
+  ) {
+    const { topicId, tagName } = dto;
+
+    await this.topicService.addTopicTag(userId, topicId, tagName);
+  }
+
+  @UseGuards(UserGuard)
+  @Patch('/topics/tags/delete')
+  @ApiOperation({ summary: 'delete topic tags' })
+  async deleteTopicTag(
+    @GetUserIdFromAccessToken() userId: string,
+    @Body() dto: DeleteTopicTagDto,
+  ) {
+    const { topicId, tagName } = dto;
+
+    await this.topicService.deleteTopicTag(userId, topicId, tagName);
   }
 
   @ApiOperation({ summary: 'Retrieve all tags' })

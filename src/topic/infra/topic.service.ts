@@ -18,6 +18,7 @@ import { RetrieveRecentTopicsTitleDto } from './dto/retrieve-recent-topics-title
 import { ModelName } from '../../common/enum/enum';
 import { ChatGptPricePerToken } from '../../common/constant/chatgpt-price-per-token';
 import { SaveTopicSyncTagsTransaction } from './transaction/save-topic-sync-tags.transaction';
+import { TagImpl } from './tag/tag';
 
 @Injectable()
 export class TopicService {
@@ -45,8 +46,9 @@ export class TopicService {
     const user = await this.userService.findUserByIdOrThrowError(userId);
     let topic: Topic;
     let changeTopicTitleRequired = false;
+
     if (!topicId) {
-      topic = TopicImpl.createTopic(tagNames, user);
+      topic = TopicImpl.createTopic(tagNames || [], user);
       if (topicTitle) {
         topic.changeTopicTitle(topicTitle);
       }
@@ -59,7 +61,7 @@ export class TopicService {
       if (!topic) {
         throw new DataNotFoundException('topic not found with id : ' + topicId);
       }
-      topic.syncTagsWithNewTagNames(tagNames, true);
+      topic.syncTagsWithNewTagNames(tagNames || [], true);
     }
     const answerStream = await topic.askToModel(
       chooseModel(modelName),
@@ -256,5 +258,16 @@ export class TopicService {
     }
 
     return { monthlyCounts, dailyCounts };
+  }
+  async addTopicTag(userId: string, topicId: string, tagName: string) {
+    await this.tagRepository.addTagToTopic(topicId, TagImpl.create(tagName));
+  }
+
+  async deleteTopicTag(userId: string, topicId: string, tagName: string) {
+    const tag = await this.tagRepository.findOne({
+      where: { name: tagName, topic: { id: topicId } },
+    });
+
+    await this.tagRepository.deleteTagToTopic(topicId, tag);
   }
 }
